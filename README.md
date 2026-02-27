@@ -240,7 +240,7 @@ Handles:
 ### 1️⃣ Clone Repository
 
 ```bash id="smsclone"
-git clone https://github.com/your-username/school-management-system.git
+git clone https://github.com/Vaibhav5335/SMS_SchoolManagementSystem-ERP-__Front-end_Codes.git
 cd school-management-system
 ```
 
