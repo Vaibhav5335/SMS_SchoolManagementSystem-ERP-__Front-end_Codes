@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full antialiased">
+<head>
+  <meta charset="UTF-8" />
+  <title>School Assistant - Parent Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: { 
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' },
+          },
+          animation: {
+            'message-in': 'messageIn 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            messageIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px) scale(0.95)' },
+              '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Hide Scrollbar but allow scrolling */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Custom Chat Scrollbar */
+    .chat-scroll::-webkit-scrollbar { width: 5px; }
+    .chat-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+    .dark .chat-scroll::-webkit-scrollbar-thumb { background-color: #334155; }
+    .chat-scroll::-webkit-scrollbar-track { background: transparent; }
+
+    /* Modern Background Pattern */
+    .chat-bg {
+      background-color: #f8fafc;
+      background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .dark .chat-bg {
+      background-color: #0f172a;
+      background-image: radial-gradient(#1e293b 1px, transparent 1px);
+    }
+
+    /* Typing Animation */
+    .typing-dot {
+      width: 6px; height: 6px; background-color: #64748b; border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out both;
+    }
+    .dark .typing-dot { background-color: #94a3b8; }
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes typing {
+      0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 text-slate-800 dark:bg-[#020617] dark:text-slate-200 transition-colors duration-300">
+
+  <div id="appShell">
+    <main>
+      <aside class="hidden lg:flex flex-col justify-center w-1/3 p-4 space-y-6">
+
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-bold mb-4 border border-blue-100 dark:border-blue-800">
+          <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+          Live Assistant
+        </div>
+      </div>
+    </aside>
+
+    <section class="flex-1 flex flex-col bg-white dark:bg-slate-900 lg:rounded-3xl shadow-xl overflow-hidden border-0 lg:border border-slate-200 dark:border-slate-800 relative h-[90vh]">
+      
+      <header class="hidden lg:flex h-16 px-6 items-center justify-between bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-100 dark:border-slate-800 z-10 sticky top-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+            <i class="fas fa-robot text-sm"></i>
+          </div>
+          <div>
+            <h2 class="font-bold text-slate-900 dark:text-white text-sm">School Assistant</h2>
+            <div class="flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Online</p>
+            </div>
+          </div>
+        </div>
+        <button onclick="clearChat()" class="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800" title="Clear Conversation">
+            <i class="fas fa-trash-alt"></i>
+        </button>
+      </header>
+
+      <div id="chat-container" class="flex-1 overflow-y-auto chat-scroll p-4 space-y-6 chat-bg pb-24 lg:pb-4 relative h-full">
+        
+        <div class="flex justify-center mt-2">
+          <p class="text-[10px] text-slate-400 dark:text-slate-500 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm px-3 py-1 rounded-full border border-slate-200/50 dark:border-slate-700/50 shadow-sm">
+            <i class="fas fa-lock text-[9px] mr-1"></i> End-to-end encrypted
+          </p>
+        </div>
+
+        <div class="flex items-start gap-3 max-w-[90%] animate-message-in">
+          <div class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-brand-600 dark:text-brand-400 text-xs shrink-0 shadow-sm">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 leading-relaxed">
+            <p><strong>Hello Parent! ðŸ‘‹</strong><br>I'm ready to help with Rohan's school details.</p>
+            <div class="mt-3 grid gap-2">
+                <div class="text-xs text-slate-500 dark:text-slate-400">Try asking about:</div>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Fees</span>
+                    <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Attendance</span>
+                    <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Exam Results</span>
+                </div>
+            </div>
+            <span class="text-[10px] text-slate-400 block text-right mt-2" id="welcome-time">--:--</span>
+          </div>
+        </div>
+
+        <div id="typing-indicator" class="hidden flex items-start gap-3 animate-pulse">
+            <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 shrink-0"></div>
+            <div class="bg-white dark:bg-slate-800 px-4 py-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-1 w-16">
+              <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+            </div>
+        </div>
+      </div>
+
+      <div class="absolute bottom-0 lg:relative w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 p-3 pb-safe z-20">
+        
+        <div class="flex gap-2 overflow-x-auto no-scrollbar mb-3 px-1">
+          <button onclick="sendQuickMsg('Show pending fees')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-full border border-slate-200 dark:border-slate-700 hover:border-brand-500 hover:text-brand-600 transition-all shadow-sm">
+            <i class="fas fa-rupee-sign mr-1 text-brand-500"></i> Fees
+          </button>
+          <button onclick="sendQuickMsg('Check attendance')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-full border border-slate-200 dark:border-slate-700 hover:border-brand-500 hover:text-brand-600 transition-all shadow-sm">
+            <i class="fas fa-chart-line mr-1 text-brand-500"></i> Attendance
+          </button>
+          <button onclick="sendQuickMsg('Next exam schedule')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-full border border-slate-200 dark:border-slate-700 hover:border-brand-500 hover:text-brand-600 transition-all shadow-sm">
+            <i class="fas fa-calendar-alt mr-1 text-brand-500"></i> Exams
+          </button>
+        </div>
+
+        <div class="flex items-end gap-2">
+            <div class="flex-1 bg-slate-100 dark:bg-slate-800 rounded-[1.5rem] flex items-center px-4 py-2 border border-transparent focus-within:border-brand-500 focus-within:bg-white dark:focus-within:bg-slate-950 focus-within:ring-2 focus-within:ring-brand-500/20 transition-all">
+                <input type="text" id="msg-input" placeholder="Type a message..." 
+                       class="bg-transparent w-full text-sm outline-none text-slate-900 dark:text-white placeholder-slate-500 py-1.5"
+                       autocomplete="off"
+                       onkeydown="handleEnter(event)">
+            </div>
+            <button onclick="sendMessage()" class="p-3 bg-brand-600 hover:bg-brand-700 text-white rounded-full shadow-lg shadow-brand-600/30 active:scale-95 transition-transform flex items-center justify-center aspect-square">
+                <i class="fas fa-paper-plane text-sm"></i>
+            </button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Supabase Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Data & Error Management -->
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/data-service.js"></script>
+  <script src="../js/error-handler.js"></script>
+
+  <script src="sidebar.js"></script>
+  
+  <script>
+    // Get current student ID
+    const CURRENT_STUDENT_ID = localStorage.getItem('studentId') || 'mock-student-1';
+    const STUDENT_NAME = localStorage.getItem('studentName') || 'Rohan Sharma';
+
+    // --- Logic Implementation ---
+    const chatContainer = document.getElementById('chat-container');
+    const inputField = document.getElementById('msg-input');
+    const typingIndicator = document.getElementById('typing-indicator');
+
+    // Init Logic
+    document.addEventListener('DOMContentLoaded', async () => {
+        document.getElementById('welcome-time').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        const dateOptions = { weekday: 'short', day: 'numeric', month: 'short' };
+        if(document.getElementById('mobileDate')) {
+            document.getElementById('mobileDate').innerText = new Date().toLocaleDateString('en-US', dateOptions);
+        }
+
+        // Load previous chat messages
+        await loadChatHistory();
+    });
+
+    async function loadChatHistory() {
+      try {
+        const result = await dataService.getChatMessages(CURRENT_STUDENT_ID, 30);
+        
+        if (result.success && result.data && result.data.length > 0) {
+          result.data.forEach(msg => {
+            appendMessage(msg.sender_type === 'parent' ? 'user' : 'bot', msg.message);
+          });
+        } else {
+          // No previous messages or using mock data
+        }
+      } catch (error) {
+        errorHandler.showWarning('Chat History', 'Unable to load previous messages');
+        console.error('Chat history error:', error);
+      }
+    }
+
+    // Go Back Functionality
+    function goBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    }
+
+    // Dark Mode Toggle Logic
+    window.toggleDarkMode = function() {
+        document.documentElement.classList.toggle('dark');
+        const isDark = document.documentElement.classList.contains('dark');
+        localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+    }
+    
+    function toggleTheme() {
+        window.toggleDarkMode();
+    }
+
+    // Chat Functions
+    function handleEnter(e) {
+      if (e.key === 'Enter') sendMessage();
+    }
+
+    function sendQuickMsg(text) {
+      inputField.value = text;
+      sendMessage();
+    }
+
+    function scrollToBottom() {
+      setTimeout(() => {
+          chatContainer.scrollTo({
+            top: chatContainer.scrollHeight,
+            behavior: 'smooth'
+          });
+      }, 50);
+    }
+
+    function clearChat() {
+        const encryption = chatContainer.children[0];
+        const firstMsg = chatContainer.children[1];
+        const typing = document.getElementById('typing-indicator');
+        
+        chatContainer.innerHTML = '';
+        chatContainer.appendChild(encryption);
+        chatContainer.appendChild(firstMsg);
+        chatContainer.appendChild(typing);
+    }
+
+    async function sendMessage() {
+      const text = inputField.value.trim();
+      if (!text) return;
+
+      // 1. Add User Message
+      appendMessage('user', text);
+      inputField.value = '';
+      inputField.focus();
+
+      // 2. Show Typing
+      showTyping(true);
+
+      // 3. Save message to database
+      try {
+        const result = await dataService.sendChatMessage({
+          student_id: CURRENT_STUDENT_ID,
+          message: text,
+          sender_type: 'parent'
+        });
+
+        if (!result.success) {
+          errorHandler.showError('Send Failed', 'Message was not saved. Please try again.');
+        }
+      } catch (error) {
+        errorHandler.showError('Connection Error', 'Failed to send message. Please try again.');
+        console.error('Send message error:', error);
+      }
+
+      // 4. Simulate Bot Response
+      setTimeout(() => {
+        showTyping(false);
+        const botResponse = getBotResponse(text);
+        appendMessage('bot', botResponse);
+        
+        // Try to save bot response
+        dataService.sendChatMessage({
+          student_id: CURRENT_STUDENT_ID,
+          message: botResponse,
+          sender_type: 'bot'
+        }).catch(err => console.error('Bot response save error:', err));
+      }, 1000 + Math.random() * 800); 
+    }
+
+    function appendMessage(sender, htmlContent) {
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const div = document.createElement('div');
+      div.className = "animate-message-in mb-2";
+      
+      if (sender === 'user') {
+        div.innerHTML = `
+          <div class="flex items-end justify-end max-w-[85%] ml-auto">
+            <div class="bg-gradient-to-br from-brand-600 to-brand-700 text-white p-3.5 px-5 rounded-2xl rounded-tr-none shadow-md text-sm leading-relaxed">
+              <p>${htmlContent}</p>
+              <div class="flex items-center justify-end gap-1 mt-1.5 opacity-80">
+                <span class="text-[10px]">${time}</span>
+                <i class="fas fa-check-double text-[9px]"></i>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        div.innerHTML = `
+          <div class="flex items-start gap-3 max-w-[90%]">
+            <div class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-brand-600 dark:text-brand-400 text-xs shrink-0 shadow-sm mt-1">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 leading-relaxed">
+              <div>${htmlContent}</div>
+              <span class="text-[10px] text-slate-400 block text-right mt-2">${time}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      chatContainer.insertBefore(div, typingIndicator);
+      scrollToBottom();
+    }
+
+    function showTyping(show) {
+      if (show) {
+        typingIndicator.classList.remove('hidden');
+        chatContainer.appendChild(typingIndicator);
+        scrollToBottom();
+      } else {
+        typingIndicator.classList.add('hidden');
+      }
+    }
+
+    // --- Smart Response Logic (Enhanced) ---
+    function getBotResponse(input) {
+      const lower = input.toLowerCase();
+
+      if (lower.includes('fee') || lower.includes('pay') || lower.includes('due')) {
+        return `
+          <div class="space-y-2">
+            <p>Here is the fee summary for <strong>${STUDENT_NAME}</strong>:</p>
+            <div class="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg border border-red-100 dark:border-red-800/50 flex justify-between items-center">
+                <span class="text-xs text-red-600 dark:text-red-400 font-medium">Pending (Dec '25)</span>
+                <span class="text-sm font-bold text-red-700 dark:text-red-300">â‚¹ 5,000</span>
+            </div>
+            <button class="w-full mt-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold py-2 rounded-lg hover:opacity-90 transition">
+                Pay Now via UPI
+            </button>
+          </div>
+        `;
+      } 
+      else if (lower.includes('attendance') || lower.includes('present')) {
+        return `
+            <p class="mb-2">Attendance is currently <strong>85%</strong>.</p>
+            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-1">
+                <div class="bg-emerald-500 h-2 rounded-full" style="width: 85%"></div>
+            </div>
+            <p class="text-[10px] text-slate-500">You are in the Safe Zone (>75%)</p>
+        `;
+      } 
+      else if (lower.includes('exam') || lower.includes('schedule')) {
+        return `
+            <p class="mb-2">Upcoming Exam Schedule:</p>
+            <div class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden text-xs">
+                <div class="flex justify-between p-2 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+                    <span>Mon, 12 Jan</span>
+                    <span class="font-bold">Data Structures</span>
+                </div>
+                <div class="flex justify-between p-2">
+                    <span>Wed, 14 Jan</span>
+                    <span class="font-bold">Mathematics</span>
+                </div>
+            </div>
+        `;
+      }
+      else {
+        return `I can help with <strong>Fees</strong>, <strong>Attendance</strong>, and <strong>Exams</strong>. Please select an option from the menu below.`;
+      }
+    }
+  </script>
+
+  <script>
+    // Save chat content before sidebar.js replaces appShell innerHTML
+    let savedMainContent = null;
+    document.addEventListener('DOMContentLoaded', function() {
+      const mainEl = document.querySelector('main');
+      if (mainEl) {
+        savedMainContent = mainEl.innerHTML;
+      }
+    }, true);
+  </script>
+
+    </main>
+  </div>
+  
+  <script>
+    // Restore chat content into pageContent after sidebar.js creates it
+    const observer = new MutationObserver(function() {
+      const pageContent = document.getElementById('pageContent');
+      if (pageContent && savedMainContent) {
+        pageContent.innerHTML = savedMainContent;
+        observer.disconnect();
+      }
+    });
+    
+    observer.observe(document.body, { childList: true, subtree: true });
+  </script>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/global-search.js"></script>
+  <script src="../js/notification-service.js"></script>
+  <script src="../js/export-service.js"></script>
+
+</body>
+</html>

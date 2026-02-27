@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ScholarSync | Intelligent Campus Portal</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        bg: '#050507', // Almost black
+                        surface: '#0E0E12',
+                        glass: 'rgba(255, 255, 255, 0.03)',
+                        border: 'rgba(255, 255, 255, 0.08)',
+                        primary: '#6366f1', // Indigo
+                        accent: '#00f0ff', // Cyber Cyan
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #1f1f1f 1px, transparent 1px), linear-gradient(to bottom, #1f1f1f 1px, transparent 1px)",
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'scan': 'scan 4s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        scan: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+
+        /* Hide scrollbar for the entire page */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Converted to Tailwind - all custom CSS removed */
+        @layer utilities {
+            /* Custom animations */
+            @keyframes scan {
+                0% { transform: translateY(-100%); }
+                100% { transform: translateY(100%); }
+            }
+            
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+            
+            @keyframes marquee {
+                0% { transform: translateX(0%); }
+                100% { transform: translateX(-100%); }
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-white antialiased selection:bg-accent selection:text-black overflow-x-hidden">
+
+    <div class="fixed inset-0 bg-grid-pattern bg-[length:40px_40px] [mask-image:radial-gradient(circle_at_center,black_40%,transparent_100%)] z-0 pointer-events-none"></div>
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/20 blur-[120px] rounded-full z-0 pointer-events-none opacity-40"></div>
+    <div class="fixed bottom-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] rounded-full z-0 pointer-events-none opacity-30"></div>
+
+    <main class="relative z-10 flex flex-col min-h-screen pb-32">
+        
+        <header class="w-full px-6 py-6 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
+                <span class="font-mono text-xs text-white/50 tracking-widest">SYSTEM: ONLINE</span>
+            </div>
+            <div class="font-display font-bold text-xl tracking-tight">
+                SCHOLAR<span class="text-primary">SYNC</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="font-mono text-xs text-white/50 text-right hidden sm:block">V 4.0.2<br>SECURE CONNECTION</span>
+                <div class="w-8 h-8 rounded border border-white/20 flex items-center justify-center">
+                    <div class="w-4 h-4 border-2 border-white/80 rounded-full border-t-transparent animate-spin"></div>
+                </div>
+            </div>
+        </header>
+
+        <section class="flex-1 flex flex-col items-center justify-center px-4 mt-10 mb-20">
+            
+            <div class="text-center mb-16 relative">
+                <h1 class="text-5xl md:text-8xl font-display font-bold mb-6 tracking-tighter">
+                    <span class="block text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">INTELLIGENT</span>
+                    <span class="block text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">CAMPUS</span>
+                </h1>
+                <p class="font-mono text-accent text-sm md:text-base tracking-widest max-w-xl mx-auto uppercase">
+                    // Synchronizing Administration, Academics, & Finance
+                </p>
+            </div>
+
+            <div class="w-full max-w-7xl relative group perspective-1000">
+                <div class="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                
+                <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] rounded-xl overflow-hidden relative after:content-[''] after:absolute after:inset-0 after:bg-[linear-gradient(to_bottom,transparent,rgba(0,240,255,0.1),transparent)] after:transform after:translate-y-[-100%] after:animate-scan after:pointer-events-none">
+                    <div class="h-8 border-b border-white/10 bg-black/20 flex items-center px-4 gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
+                        <div class="ml-auto font-mono text-[10px] text-white/30">DASHBOARD_MAIN_VIEW.EXE</div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-4 h-[600px] lg:h-[700px]">
+                        
+                        <div class="hidden lg:flex flex-col border-r border-white/10 p-4 gap-2 bg-black/20">
+                            <div class="p-3 rounded bg-primary/20 border border-primary/30 text-primary text-xs font-mono mb-4">
+                                > USER: ADMIN
+                            </div>
+                            <nav class="space-y-1">
+                                <a href="#" class="block p-3 rounded bg-white/5 border border-white/5 text-sm hover:bg-white/10 transition">Overview</a>
+                                <a href="#" class="block p-3 rounded text-white/50 hover:text-white text-sm hover:bg-white/5 transition">Students</a>
+                                <a href="#" class="block p-3 rounded text-white/50 hover:text-white text-sm hover:bg-white/5 transition">Faculty</a>
+                                <a href="#" class="block p-3 rounded text-white/50 hover:text-white text-sm hover:bg-white/5 transition">Finance</a>
+                                <a href="#" class="block p-3 rounded text-white/50 hover:text-white text-sm hover:bg-white/5 transition">Library</a>
+                            </nav>
+                            <div class="mt-auto">
+                                <div class="h-32 rounded border border-white/10 bg-black/40 p-3 relative overflow-hidden">
+                                    <div class="text-[10px] text-white/40 font-mono mb-2">SERVER LOAD</div>
+                                    <div class="flex items-end gap-1 h-16">
+                                        <div class="w-2 bg-accent/50 h-[40%]"></div>
+                                        <div class="w-2 bg-accent/50 h-[60%]"></div>
+                                        <div class="w-2 bg-accent/80 h-[80%] animate-pulse"></div>
+                                        <div class="w-2 bg-accent/50 h-[50%]"></div>
+                                        <div class="w-2 bg-accent/50 h-[70%]"></div>
+                                        <div class="w-2 bg-accent/50 h-[40%]"></div>
+                                        <div class="w-2 bg-accent/50 h-[90%]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-3 p-6 lg:p-10 overflow-y-auto relative bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-100 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                                <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] p-5 rounded-lg hover:border-primary/50 transition duration-300">
+                                    <div class="font-mono text-xs text-primary mb-2">> TOTAL_ENROLLMENT</div>
+                                    <div class="text-3xl font-display font-bold">2,405</div>
+                                    <div class="text-xs text-green-400 mt-2 flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                                        +12% vs last term
+                                    </div>
+                                </div>
+                                <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] p-5 rounded-lg hover:border-accent/50 transition duration-300">
+                                    <div class="font-mono text-xs text-accent mb-2">> ATTENDANCE_RATE</div>
+                                    <div class="text-3xl font-display font-bold">96.8%</div>
+                                    <div class="text-xs text-white/40 mt-2">Live tracking active</div>
+                                </div>
+                                <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] p-5 rounded-lg hover:border-purple-500/50 transition duration-300">
+                                    <div class="font-mono text-xs text-purple-400 mb-2">> REVENUE_COLLECTED</div>
+                                    <div class="text-3xl font-display font-bold">$1.2M</div>
+                                    <div class="text-xs text-white/40 mt-2">FY 2024-2025</div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+                                
+                                <div class="md:col-span-2 bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] rounded-lg p-6 relative overflow-hidden group">
+                                    <div class="flex justify-between items-center mb-6">
+                                        <h3 class="font-display font-bold">Academic Performance Index</h3>
+                                        <div class="flex gap-2">
+                                            <span class="w-2 h-2 rounded-full bg-primary"></span>
+                                            <span class="w-2 h-2 rounded-full bg-white/20"></span>
+                                        </div>
+                                    </div>
+                                    <div class="h-40 w-full flex items-end justify-between gap-2 opacity-80">
+                                        <div class="w-full bg-white/5 rounded-t hover:bg-primary/80 transition-all h-[30%]"></div>
+                                        <div class="w-full bg-white/5 rounded-t hover:bg-primary/80 transition-all h-[50%]"></div>
+                                        <div class="w-full bg-white/5 rounded-t hover:bg-primary/80 transition-all h-[40%]"></div>
+                                        <div class="w-full bg-white/5 rounded-t hover:bg-primary/80 transition-all h-[70%]"></div>
+                                        <div class="w-full bg-primary/50 rounded-t hover:bg-primary transition-all h-[60%] shadow-[0_0_15px_rgba(99,102,241,0.5)]"></div>
+                                        <div class="w-full bg-white/5 rounded-t hover:bg-primary/80 transition-all h-[80%]"></div>
+                                        <div class="w-full bg-white/5 rounded-t hover:bg-primary/80 transition-all h-[55%]"></div>
+                                        <div class="w-full bg-white/5 rounded-t hover:bg-primary/80 transition-all h-[90%]"></div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] rounded-lg p-6">
+                                    <h3 class="font-display font-bold mb-4">Live Activity</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center gap-3 text-sm">
+                                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                            <span class="text-white/60">New admission application received</span>
+                                            <span class="ml-auto font-mono text-xs text-white/30">2m</span>
+                                        </div>
+                                        <div class="flex items-center gap-3 text-sm">
+                                            <div class="w-2 h-2 bg-primary rounded-full"></div>
+                                            <span class="text-white/60">Grade 10B Results Published</span>
+                                            <span class="ml-auto font-mono text-xs text-white/30">15m</span>
+                                        </div>
+                                        <div class="flex items-center gap-3 text-sm">
+                                            <div class="w-2 h-2 bg-accent rounded-full"></div>
+                                            <span class="text-white/60">Library Fine Collected: ID #992</span>
+                                            <span class="ml-auto font-mono text-xs text-white/30">1h</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] rounded-lg p-6 flex flex-col justify-center gap-3">
+                                    <button class="w-full py-3 bg-white/5 border border-white/10 hover:bg-primary hover:border-primary transition-all text-sm font-bold tracking-wide rounded">
+                                        GENERATE REPORTS
+                                    </button>
+                                    <button class="w-full py-3 bg-white/5 border border-white/10 hover:bg-accent hover:border-accent hover:text-black transition-all text-sm font-bold tracking-wide rounded">
+                                        MANAGE USERS
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- Neural Architecture Section -->
+        <section id="services" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="flex items-end justify-between mb-12 border-b border-white/10 pb-4">
+                    <div>
+                        <h2 class="text-3xl font-display font-bold">Full Architecture Stack</h2>
+                        <p class="font-mono text-white/40 text-xs mt-1">> ALL MODULES</p>
+                    </div>
+                    <div class="hidden md:block font-mono text-xs text-accent">Status: ACTIVE</div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] p-6 rounded-lg relative group hover:bg-white/5 transition duration-300 before:absolute before:top-[-1px] before:left-[-1px] before:w-[10px] before:h-[10px] before:border before:border-white/30 before:border-r-0 before:border-b-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full hover:before:border-accent after:absolute after:bottom-[-1px] after:right-[-1px] after:w-[10px] after:h-[10px] after:border after:border-white/30 after:border-l-0 after:border-t-0 after:transition-all after:duration-300 hover:after:w-full hover:after:h-full hover:after:border-accent">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-primary/10 text-primary rounded border border-primary/20">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            </div>
+                            <span class="font-mono text-[10px] text-white/30 group-hover:text-primary">SYS_ADMIN</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition">Administration Core</h3>
+                        <p class="text-white/50 text-sm leading-relaxed">
+                            Centralized command for admission cycles, staff payroll, and global settings. Replace paperwork with digital workflows.
+                        </p>
+                        <div class="mt-4 pt-4 border-t border-white/5 font-mono text-[10px] text-white/40 flex gap-2">
+                            <span>> HR_MGMT</span>
+                            <span>> ADMISSIONS</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] p-6 rounded-lg relative group hover:bg-white/5 transition duration-300 before:absolute before:top-[-1px] before:left-[-1px] before:w-[10px] before:h-[10px] before:border before:border-white/30 before:border-r-0 before:border-b-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full hover:before:border-accent after:absolute after:bottom-[-1px] after:right-[-1px] after:w-[10px] after:h-[10px] after:border after:border-white/30 after:border-l-0 after:border-t-0 after:transition-all after:duration-300 hover:after:w-full hover:after:h-full hover:after:border-accent">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-accent/10 text-accent rounded border border-accent/20">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <span class="font-mono text-[10px] text-white/30 group-hover:text-accent">FIN_ENGINE</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-accent transition">Finance Engine</h3>
+                        <p class="text-white/50 text-sm leading-relaxed">
+                            Automated fee collection via gateway integration. Real-time ledger updates and defaulter tracking algorithms.
+                        </p>
+                        <div class="mt-4 pt-4 border-t border-white/5 font-mono text-[10px] text-white/40 flex gap-2">
+                            <span>> INVOICING</span>
+                            <span>> PAYROLL</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] p-6 rounded-lg relative group hover:bg-white/5 transition duration-300 before:absolute before:top-[-1px] before:left-[-1px] before:w-[10px] before:h-[10px] before:border before:border-white/30 before:border-r-0 before:border-b-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full hover:before:border-accent after:absolute after:bottom-[-1px] after:right-[-1px] after:w-[10px] after:h-[10px] after:border after:border-white/30 after:border-l-0 after:border-t-0 after:transition-all after:duration-300 hover:after:w-full hover:after:h-full hover:after:border-accent">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-green-500/10 text-green-400 rounded border border-green-500/20">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                            </div>
+                            <span class="font-mono text-[10px] text-white/30 group-hover:text-green-400">LMS_NODE</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-green-400 transition">Learning Node</h3>
+                        <p class="text-white/50 text-sm leading-relaxed">
+                            Next-gen LMS. Digital assignments, online exams with proctoring AI, and automated report card generation.
+                        </p>
+                        <div class="mt-4 pt-4 border-t border-white/5 font-mono text-[10px] text-white/40 flex gap-2">
+                            <span>> EXAMS</span>
+                            <span>> E-LEARNING</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] p-6 rounded-lg relative group hover:bg-white/5 transition duration-300 before:absolute before:top-[-1px] before:left-[-1px] before:w-[10px] before:h-[10px] before:border before:border-white/30 before:border-r-0 before:border-b-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full hover:before:border-accent after:absolute after:bottom-[-1px] after:right-[-1px] after:w-[10px] after:h-[10px] after:border after:border-white/30 after:border-l-0 after:border-t-0 after:transition-all after:duration-300 hover:after:w-full hover:after:h-full hover:after:border-accent">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-yellow-500/10 text-yellow-400 rounded border border-yellow-500/20">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            </div>
+                            <span class="font-mono text-[10px] text-white/30 group-hover:text-yellow-400">LIB_DATA</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-yellow-400 transition">Data Library</h3>
+                        <p class="text-white/50 text-sm leading-relaxed">
+                            Smart inventory management for physical and digital assets. Barcode integration and fine calculation.
+                        </p>
+                        <div class="mt-4 pt-4 border-t border-white/5 font-mono text-[10px] text-white/40 flex gap-2">
+                            <span>> INVENTORY</span>
+                            <span>> TRACKING</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] p-6 rounded-lg relative group hover:bg-white/5 transition duration-300 before:absolute before:top-[-1px] before:left-[-1px] before:w-[10px] before:h-[10px] before:border before:border-white/30 before:border-r-0 before:border-b-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full hover:before:border-accent after:absolute after:bottom-[-1px] after:right-[-1px] after:w-[10px] after:h-[10px] after:border after:border-white/30 after:border-l-0 after:border-t-0 after:transition-all after:duration-300 hover:after:w-full hover:after:h-full hover:after:border-accent">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-purple-500/10 text-purple-400 rounded border border-purple-500/20">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <span class="font-mono text-[10px] text-white/30 group-hover:text-purple-400">MOBILE_LINK</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition">Pocket Link</h3>
+                        <p class="text-white/50 text-sm leading-relaxed">
+                            Native iOS and Android applications for parents and students. Push notifications for instant updates.
+                        </p>
+                        <div class="mt-4 pt-4 border-t border-white/5 font-mono text-[10px] text-white/40 flex gap-2">
+                            <span>> APP_STORE</span>
+                            <span>> PLAY_STORE</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] p-6 rounded-lg relative group hover:bg-white/5 transition duration-300 before:absolute before:top-[-1px] before:left-[-1px] before:w-[10px] before:h-[10px] before:border before:border-white/30 before:border-r-0 before:border-b-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full hover:before:border-accent after:absolute after:bottom-[-1px] after:right-[-1px] after:w-[10px] after:h-[10px] after:border after:border-white/30 after:border-l-0 after:border-t-0 after:transition-all after:duration-300 hover:after:w-full hover:after:h-full hover:after:border-accent flex flex-col justify-center items-center text-center cursor-pointer border-dashed border-white/20 hover:border-white/40">
+                        <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4 group-hover:bg-white/10 transition">
+                            <svg class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        </div>
+                        <h3 class="text-sm font-bold mb-1">Explore All Modules</h3>
+                        <p class="text-white/30 text-xs">View full documentation</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="py-20 bg-black/20">
+            <div class="container mx-auto px-6">
+                <div class="font-mono text-xs text-white/40 mb-6 border-l-2 border-primary pl-4">
+                    > INCOMING_TRANSMISSIONS // USER_LOGS
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] p-6 rounded-br-3xl">
+                        <div class="font-mono text-[10px] text-primary mb-2">SOURCE: PRINCIPAL_OFFICE // ID_882</div>
+                        <p class="text-lg italic text-white/80 mb-4">"Deployment complete. Administrative overhead reduced by 40% within the first cycle. The interface is intuitive for all operative levels."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded bg-white/10"></div>
+                            <div class="text-xs">
+                                <div class="font-bold">Dr. A. Vance</div>
+                                <div class="text-white/40">Dean, St. Xavier's High</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] p-6 rounded-br-3xl">
+                        <div class="font-mono text-[10px] text-accent mb-2">SOURCE: ADMIN_ROOT // ID_104</div>
+                        <p class="text-lg italic text-white/80 mb-4">"The Finance Engine is flawless. Defaulter tracking is now automated, ensuring revenue stability. A critical upgrade for our infrastructure."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded bg-white/10"></div>
+                            <div class="text-xs">
+                                <div class="font-bold">Sarah Connor</div>
+                                <div class="text-white/40">Admin Head, Tech Charter</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 border-y border-white/5 bg-black/40">
+            <div class="container mx-auto px-6">
+                <div class="font-mono text-accent text-xs mb-8 tracking-widest">>> MORE DETAILS CAN BE ADDED HERE TEMPORARILY SECTION</div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="p-6 rounded border border-white/10 hover:border-accent/50 hover:bg-white/5 transition duration-300 group cursor-pointer">
+                        <div class="w-10 h-10 rounded bg-white/5 flex items-center justify-center mb-4 text-white group-hover:text-accent group-hover:scale-110 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Academic Core</h3>
+                        <p class="text-sm text-white/50">Examinations, grading, and automated report card generation.</p>
+                    </div>
+
+                    <div class="p-6 rounded border border-white/10 hover:border-primary/50 hover:bg-white/5 transition duration-300 group cursor-pointer">
+                        <div class="w-10 h-10 rounded bg-white/5 flex items-center justify-center mb-4 text-white group-hover:text-primary group-hover:scale-110 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Finance Engine</h3>
+                        <p class="text-sm text-white/50">Fee collection, payroll automation, and real-time ledger.</p>
+                    </div>
+
+                    <div class="p-6 rounded border border-white/10 hover:border-purple-500/50 hover:bg-white/5 transition duration-300 group cursor-pointer">
+                        <div class="w-10 h-10 rounded bg-white/5 flex items-center justify-center mb-4 text-white group-hover:text-purple-500 group-hover:scale-110 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Admission Flow</h3>
+                        <p class="text-sm text-white/50">Digital inquiry management and paperless enrollment.</p>
+                    </div>
+
+                    <div class="p-6 rounded border border-white/10 hover:border-green-500/50 hover:bg-white/5 transition duration-300 group cursor-pointer">
+                        <div class="w-10 h-10 rounded bg-white/5 flex items-center justify-center mb-4 text-white group-hover:text-green-500 group-hover:scale-110 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Smart Library</h3>
+                        <p class="text-sm text-white/50">Barcode scanning, inventory tracking, and e-book management.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4)] p-1 rounded-2xl">
+                    <div class="bg-black/80 rounded-xl p-8 md:p-12 border border-white/5 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-20">
+                            <svg class="w-24 h-24 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                        </div>
+
+                        <div class="relative z-10">
+                            <h2 class="text-3xl font-display font-bold mb-2">Initialize Comm-Link</h2>
+                            <p class="font-mono text-white/40 text-sm mb-8">> ESTABLISH SECURE CONNECTION WITH SALES TEAM</p>
+
+                            <form class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-mono text-primary uppercase tracking-widest">Identify Identity</label>
+                                        <input type="text" placeholder="FULL_NAME" class="bg-white/3 border border-white/10 text-white font-mono w-full p-3 rounded text-sm placeholder-white/20 focus:outline-none focus:border-primary focus:bg-primary/5 focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-mono text-primary uppercase tracking-widest">Target Coordinates</label>
+                                        <input type="email" placeholder="EMAIL_ADDRESS" class="bg-white/3 border border-white/10 text-white font-mono w-full p-3 rounded text-sm placeholder-white/20 focus:outline-none focus:border-primary focus:bg-primary/5 focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-mono text-primary uppercase tracking-widest">Institution Data</label>
+                                    <input type="text" placeholder="SCHOOL / UNIVERSITY NAME" class="bg-white/3 border border-white/10 text-white font-mono w-full p-3 rounded text-sm placeholder-white/20 focus:outline-none focus:border-primary focus:bg-primary/5 focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-mono text-primary uppercase tracking-widest">Transmission Payload</label>
+                                    <textarea rows="4" placeholder="ENTER MESSAGE..." class="bg-white/3 border border-white/10 text-white font-mono w-full p-3 rounded text-sm placeholder-white/20 focus:outline-none focus:border-primary focus:bg-primary/5 focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]"></textarea>
+                                </div>
+
+                                <button type="button" class="group w-full py-4 bg-primary text-white font-bold tracking-widest uppercase text-sm hover:bg-indigo-500 transition-all relative overflow-hidden">
+                                    <span class="relative z-10 group-hover:animate-pulse">Transmit Data</span>
+                                    <div class="absolute inset-0 bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                                </button>
+                                
+                                <div class="text-center font-mono text-[10px] text-white/30">
+                                    ENCRYPTION: TLS 1.3 // IP LOGGED FOR SECURITY
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Status Bar -->
+        <div class="w-full overflow-hidden border-y border-white/10 bg-white/5 py-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div class="whitespace-nowrap flex gap-8 items-center font-mono text-xs text-white/60 animate-[marquee_25s_linear_infinite]">
+                <span>[SYSTEM MSG]: DATA SYNC COMPLETE</span>
+                <span class="text-accent">///</span>
+                <span>NEW MODULE INSTALLED: AI_GRADING_V2</span>
+                <span class="text-accent">///</span>
+                <span>SECURITY PROTOCOL: ENCRYPTED (AES-256)</span>
+                <span class="text-accent">///</span>
+                <span>SERVER LOAD: 12%</span>
+                <span class="text-accent">///</span>
+                <span>BACKUP: SUCCESSFUL AT 04:00 UTC</span>
+                <span class="text-accent">///</span>
+                <span>USER_LOGINS_ACTIVE: 452</span>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+        <div class="bg-surface/60 backdrop-blur-xl border border-border shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.4),0_0_50px_rgba(0,0,0,0.5)] px-6 py-3 rounded-2xl flex items-center gap-6">
+            <a href="#" class="flex flex-col items-center gap-1 group">
+                <div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all group-hover:-translate-y-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </div>
+                <span class="text-[10px] text-white/50 font-mono opacity-0 group-hover:opacity-100 absolute -bottom-4 transition">Modules</span>
+            </a>
+            
+            <a href="#" class="flex flex-col items-center gap-1 group">
+                <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white group-hover:bg-accent group-hover:text-black transition-all group-hover:-translate-y-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <span class="text-[10px] text-white/50 font-mono opacity-0 group-hover:opacity-100 absolute -bottom-4 transition">Data</span>
+            </a>
+
+            <div class="w-px h-8 bg-white/10"></div>
+
+            <a href="/login.html" class="flex flex-col items-center gap-1 group">
+                <div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-white shadow-[0_0_20px_rgba(99,102,241,0.5)] hover:scale-110 transition-transform">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                </div>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

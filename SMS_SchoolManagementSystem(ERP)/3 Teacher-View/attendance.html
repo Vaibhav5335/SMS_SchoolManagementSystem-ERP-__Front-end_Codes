@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Attendance - Teacher Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          },
+          colors: {
+            brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' },
+            dark: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+            'slide-in': 'slideIn 0.4s ease-out forwards',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(15px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideIn: {
+              '0%': { opacity: '0', transform: 'translateX(-10px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Scrollbar Styling - Hide by default */
+    html,
+    body {
+      scrollbar-width: none;
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Focus States */
+    *:focus-visible {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), inset 0 0 0 1px #3b82f6;
+    }
+
+    /* Button States */
+    button,
+    [role="button"] {
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    button:hover,
+    [role="button"]:hover {
+      transform: translateY(-1px);
+    }
+
+    button:active,
+    [role="button"]:active {
+      transform: translateY(0);
+    }
+
+    /* Card Hover Effects */
+    .card-hover {
+      transition: all 200ms ease;
+    }
+
+    .card-hover:hover {
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    /* Table Styling */
+    table tbody tr {
+      transition: background-color 150ms ease;
+    }
+
+    table tbody tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    .dark table tbody tr:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    /* Badge Styling */
+    .badge-base {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      transition: all 150ms ease;
+    }
+
+    /* Add left padding to main content area */
+    @media (min-width: 1024px) {
+      #mainContent {
+        padding-left: 1rem !important;
+      }
+    }
+  </style>
+</head>
+
+<body
+  class="min-h-screen bg-slate-50 text-slate-800 antialiased dark:bg-[#020617] dark:text-slate-200 transition-colors duration-300">
+
+  <div id="appShell"></div>
+
+  <main id="attendanceMain" class="hidden w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
+    <br>
+    <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="inline-block w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+          <p class="text-[11px] tracking-[0.2em] font-bold text-slate-500 dark:text-slate-400 uppercase">
+            Class Management
+          </p>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Attendance Management
+        </h1>
+        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-2 max-w-2xl">
+          Mark attendance for your classes and monitor daily attendance records.
+        </p>
+      </div>
+
+      <div
+        class="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-1 shadow-sm">
+        <button
+          class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+          aria-label="Previous">
+          <i class="fas fa-chevron-left text-xs"></i>
+        </button>
+        <span class="px-4 text-sm font-bold text-slate-900 dark:text-white min-w-[120px] text-center"
+          id="attendanceDateDisplay">Today</span>
+        <button
+          class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+          aria-label="Next">
+          <i class="fas fa-chevron-right text-xs"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Class Selection & Quick Actions -->
+    <section
+      class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="md:col-span-2">
+          <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wide">Select
+            Class</label>
+          <select id="classSelect" onchange="loadClassAttendance()"
+            class="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent font-medium">
+            <option value="">Choose a class...</option>
+            <option value="8B">Class 8B - Mathematics (38 Students)</option>
+            <option value="5A">Class 5A - Science (45 Students)</option>
+            <option value="6C">Class 6C - Mathematics (42 Students)</option>
+            <option value="7D">Class 7D - Physics (40 Students)</option>
+          </select>
+        </div>
+        <div class="flex items-end gap-3">
+          <button onclick="markAllPresent()"
+            class="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-bold shadow-sm transition-all active:scale-95">
+            <i class="fas fa-check-double"></i>
+            <span>Mark All Present</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Overview -->
+    <section class="mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm card-hover">
+          <div
+            class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4">
+            <i class="fas fa-users text-lg"></i>
+          </div>
+          <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Total Students</p>
+          <p class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2" id="totalStudents">38</p>
+        </div>
+
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm card-hover">
+          <div
+            class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-4">
+            <i class="fas fa-check-circle text-lg"></i>
+          </div>
+          <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Present</p>
+          <p class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-2" id="presentCount">35</p>
+        </div>
+
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm card-hover">
+          <div
+            class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400 mb-4">
+            <i class="fas fa-times-circle text-lg"></i>
+          </div>
+          <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Absent</p>
+          <p class="text-3xl font-extrabold text-red-600 dark:text-red-400 mt-2" id="absentCount">3</p>
+        </div>
+
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm card-hover">
+          <div
+            class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-4">
+            <i class="fas fa-percent text-lg"></i>
+          </div>
+          <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Percentage</p>
+          <p class="text-3xl font-extrabold text-amber-600 dark:text-amber-400 mt-2" id="attendancePercentage">92%</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Students Attendance List -->
+    <section
+      class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm overflow-hidden">
+      <div class="p-6 border-b border-slate-200 dark:border-slate-800">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white">Students List</h2>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-slate-50 dark:bg-slate-800/50">
+            <tr>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                Roll</th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                Student Name</th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                Current Status</th>
+              <th
+                class="px-6 py-4 text-right text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                Action</th>
+            </tr>
+          </thead>
+          <tbody id="studentsList" class="divide-y divide-slate-200 dark:divide-slate-800">
+            <!-- Students loaded dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-6 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-3">
+        <button onclick="resetAttendance()"
+          class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white px-6 py-3 rounded-xl font-bold transition-all">
+          <i class="fas fa-undo"></i>
+          <span>Reset</span>
+        </button>
+        <button onclick="saveAttendance()"
+          class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-brand-500/20 transition-all active:scale-95">
+          <i class="fas fa-save"></i>
+          <span>Save Attendance</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Supabase Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Data & Error Management -->
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/data-service.js"></script>
+  <script src="../js/error-handler.js"></script>
+
+  <script src="sidebar.js"></script>
+  <script src="../js/theme-manager.js"></script>
+
+  <script>
+    // Sample students data
+    let students = [
+      { rollNo: 1, name: 'Rahul Sharma', status: 'present' },
+      { rollNo: 2, name: 'Priya Patel', status: 'present' },
+      { rollNo: 3, name: 'Amit Kumar', status: 'absent' },
+      { rollNo: 4, name: 'Sneha Singh', status: 'present' },
+      { rollNo: 5, name: 'Vikram Mehta', status: 'present' },
+      { rollNo: 6, name: 'Isha Verma', status: 'present' },
+      { rollNo: 7, name: 'Rohan Chopra', status: 'absent' },
+      { rollNo: 8, name: 'Disha Joshi', status: 'present' },
+    ];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      loadClassAttendance();
+
+      // Set today's date
+      const dateDisplay = document.getElementById('attendanceDateDisplay');
+      if (dateDisplay) {
+        const today = new Date();
+        const options = { weekday: 'long', month: 'short', day: 'numeric' };
+        dateDisplay.textContent = today.toLocaleDateString('en-US', options);
+      }
+    });
+
+    function loadClassAttendance() {
+      const tbody = document.getElementById('studentsList');
+      if (!tbody) return;
+
+      tbody.innerHTML = '';
+
+      students.forEach(student => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors';
+
+        // Roll No
+        const rollCell = document.createElement('td');
+        rollCell.className = 'px-6 py-4 whitespace-nowrap';
+        const rollBadge = document.createElement('span');
+        rollBadge.className = 'text-sm font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-lg';
+        rollBadge.textContent = `#${student.rollNo}`;
+        rollCell.appendChild(rollBadge);
+
+        // Name
+        const nameCell = document.createElement('td');
+        nameCell.className = 'px-6 py-4 whitespace-nowrap';
+        const nameElem = document.createElement('p');
+        nameElem.className = 'font-bold text-slate-900 dark:text-white';
+        nameElem.textContent = student.name;
+        nameCell.appendChild(nameElem);
+
+        // Status
+        const statusCell = document.createElement('td');
+        statusCell.className = 'px-6 py-4 whitespace-nowrap';
+        const statusBadge = document.createElement('span');
+        const isPresent = student.status === 'present';
+        statusBadge.className = `text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 w-fit ${isPresent ? 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400' : 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400'}`;
+        statusBadge.innerHTML = `<i class="fas fa-${isPresent ? 'check-circle' : 'times-circle'}"></i> ${isPresent ? 'Present' : 'Absent'}`;
+        statusCell.appendChild(statusBadge);
+
+        // Action
+        const actionCell = document.createElement('td');
+        actionCell.className = 'px-6 py-4 whitespace-nowrap text-right';
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = `text-sm font-bold px-4 py-2 rounded-lg transition-all ${isPresent ? 'bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20' : 'bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/20'}`;
+        toggleBtn.innerHTML = `<i class="fas fa-exchange-alt mr-1"></i>${isPresent ? 'Mark Absent' : 'Mark Present'}`;
+        toggleBtn.onclick = () => toggleStatus(student.rollNo);
+        actionCell.appendChild(toggleBtn);
+
+        tr.appendChild(rollCell);
+        tr.appendChild(nameCell);
+        tr.appendChild(statusCell);
+        tr.appendChild(actionCell);
+        tbody.appendChild(tr);
+      });
+      updateStats();
+    }
+
+    function toggleStatus(rollNo) {
+      const student = students.find(s => s.rollNo === rollNo);
+      if (student) {
+        student.status = student.status === 'present' ? 'absent' : 'present';
+        loadClassAttendance();
+      }
+    }
+
+    function markAllPresent() {
+      students.forEach(student => {
+        student.status = 'present';
+      });
+      loadClassAttendance();
+      if (typeof NotificationManager !== 'undefined') {
+        NotificationManager.success('All students marked present');
+      }
+    }
+
+    function resetAttendance() {
+      if (confirm('Reset attendance to original state?')) {
+        loadClassAttendance();
+        if (typeof NotificationManager !== 'undefined') {
+          NotificationManager.info('Attendance reset');
+        }
+      }
+    }
+
+    function updateStats() {
+      const present = students.filter(s => s.status === 'present').length;
+      const absent = students.length - present;
+      const percentage = ((present / students.length) * 100).toFixed(1);
+
+      document.getElementById('totalStudents').textContent = students.length;
+      document.getElementById('presentCount').textContent = present;
+      document.getElementById('absentCount').textContent = absent;
+      document.getElementById('attendancePercentage').textContent = percentage + '%';
+    }
+
+    async function saveAttendance() {
+      if (typeof NotificationManager !== 'undefined') {
+        NotificationManager.success('Attendance saved successfully');
+      } else {
+        alert('Attendance saved successfully');
+      }
+    }
+
+    // Initialize page content with sidebar
+    function initPage() {
+      const mainElement = document.getElementById('attendanceMain');
+      const mainContent = document.getElementById('mainContent');
+
+      if (mainElement && mainContent) {
+        mainContent.innerHTML = mainElement.innerHTML;
+        mainElement.remove();
+      } else {
+        setTimeout(initPage, 100);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPage);
+    } else {
+      initPage();
+    }
+  </script>
+
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/global-search.js"></script>
+  <script src="../js/notification-service.js"></script>
+  <script src="../js/export-service.js"></script>
+
+</body>
+
+</html>

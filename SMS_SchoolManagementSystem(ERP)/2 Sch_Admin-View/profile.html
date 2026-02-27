@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Profile - School Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          },
+          colors: {
+            brand: { 50: '#dcfce7', 100: '#bbf7d0', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 900: '#14532d' },
+            dark: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+            'slide-in': 'slideIn 0.4s ease-out forwards',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(15px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideIn: {
+              '0%': { opacity: '0', transform: 'translateX(-10px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    *:focus-visible {
+      outline: 2px solid #22c55e;
+      outline-offset: 2px;
+    }
+
+    /* Glassmorphism utilities */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .dark .glass {
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    /* Add left padding to main content area */
+    @media (min-width: 1024px) {
+      #mainContent {
+        padding-left: 1rem !important;
+      }
+    }
+  </style>
+</head>
+
+<body
+  class="min-h-screen bg-slate-50 text-slate-800 antialiased dark:bg-[#020617] dark:text-slate-200 transition-colors duration-300">
+  <div id="appShell"></div>
+
+  <main id="profileMain" class="hidden w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
+    <br>
+    <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Profile
+            Settings</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Admin Profile
+        </h1>
+        <p class="text-base text-slate-600 dark:text-slate-400 mt-2">
+          Manage your account settings and preferences
+        </p>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Profile Card -->
+      <div class="lg:col-span-1">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+          <div class="text-center">
+            <div class="relative inline-block mb-6">
+              <div class="w-32 h-32 rounded-2xl bg-gradient-to-br from-brand-500 to-emerald-600 p-1 mx-auto">
+                <img id="profileImage"
+                  src="https://ui-avatars.com/api/?name=Principal+John+Doe&background=random&size=200" alt="Profile"
+                  class="w-full h-full rounded-xl object-cover">
+              </div>
+              <button onclick="changeProfileImage()"
+                class="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-brand-500 hover:bg-brand-600 text-white flex items-center justify-center shadow-lg transition-all">
+                <i class="fas fa-camera text-xs"></i>
+              </button>
+            </div>
+
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-1">Principal John Doe</h2>
+            <p class="text-slate-600 dark:text-slate-400 mb-4">School Administrator</p>
+
+            <div class="flex flex-wrap justify-center gap-2 mb-6">
+              <span
+                class="bg-brand-100 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300 px-3 py-1 rounded-full text-sm font-bold">
+                <i class="fas fa-school mr-1"></i>Admin
+              </span>
+              <span
+                class="bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-sm font-bold">
+                <i class="fas fa-shield-alt mr-1"></i>Verified
+              </span>
+            </div>
+
+            <div class="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+              <div class="flex items-center justify-center gap-2">
+                <i class="fas fa-envelope text-brand-500"></i>
+                <span>principal@greenwood.edu</span>
+              </div>
+              <div class="flex items-center justify-center gap-2">
+                <i class="fas fa-phone text-brand-500"></i>
+                <span>+91 98765 43210</span>
+              </div>
+              <div class="flex items-center justify-center gap-2">
+                <i class="fas fa-calendar-alt text-brand-500"></i>
+                <span>Joined: Jan 2020</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Settings -->
+      <div class="lg:col-span-2">
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm mb-6">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+            <i class="fas fa-user-edit text-brand-500"></i>Personal Information
+          </h3>
+
+          <form id="profileForm" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
+                <input type="text" id="fullName" value="Principal John Doe"
+                  class="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
+                <input type="email" id="email" value="principal@greenwood.edu"
+                  class="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Phone Number</label>
+                <input type="tel" id="phone" value="+91 98765 43210"
+                  class="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Department</label>
+                <input type="text" id="department" value="Administration"
+                  class="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Bio</label>
+              <textarea id="bio" rows="4"
+                class="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">Experienced educational leader with 15+ years in school administration. Passionate about creating excellent learning environments and fostering student success.</textarea>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4">
+              <button type="button" onclick="resetProfileForm()"
+                class="px-6 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold transition-all">
+                Reset
+              </button>
+              <button type="submit"
+                class="px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-emerald-600 hover:from-brand-600 hover:to-emerald-700 text-white font-bold shadow-lg hover:shadow-xl transition-all active:scale-95">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Security Settings -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+            <i class="fas fa-shield-alt text-brand-500"></i>Security Settings
+          </h3>
+
+          <div class="space-y-6">
+            <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+              <div>
+                <h4 class="font-bold text-slate-900 dark:text-white">Two-Factor Authentication</h4>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Add an extra layer of security to your account</p>
+              </div>
+              <button onclick="toggle2FA()"
+                class="px-4 py-2 rounded-lg bg-brand-100 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300 font-bold hover:bg-brand-200 dark:hover:bg-brand-800/30 transition-colors">
+                Enable
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+              <div>
+                <h4 class="font-bold text-slate-900 dark:text-white">Change Password</h4>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Update your account password</p>
+              </div>
+              <button onclick="openPasswordModal()"
+                class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold transition-colors">
+                Change
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+              <div>
+                <h4 class="font-bold text-slate-900 dark:text-white">Login Activity</h4>
+                <p class="text-sm text-slate-600 dark:text-slate-400">View your recent login history</p>
+              </div>
+              <button onclick="viewLoginActivity()"
+                class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold transition-colors">
+                View
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Password Change Modal -->
+  <div id="passwordModal"
+    class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div
+      class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Change Password</h3>
+        <button onclick="closePasswordModal()"
+          class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form id="passwordForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Current Password</label>
+          <input type="password" required
+            class="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">New Password</label>
+          <input type="password" required
+            class="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Confirm New Password</label>
+          <input type="password" required
+            class="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+        </div>
+
+        <div class="flex space-x-3 pt-4">
+          <button type="button" onclick="closePasswordModal()"
+            class="flex-1 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 py-3 rounded-xl font-bold transition-all">
+            Cancel
+          </button>
+          <button type="submit"
+            class="flex-1 bg-gradient-to-r from-brand-500 to-emerald-600 hover:from-brand-600 hover:to-emerald-700 text-white py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all">
+            Update Password
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/common-features.js"></script>
+  <script src="sidebar.js"></script>
+
+  <script>
+    'use strict';
+
+    // Current user data
+    const CURRENT_USER = localStorage.getItem('adminId') || 'mock-admin-1';
+
+    // Wait for sidebar to be injected, then move content into mainContent
+    function initProfile() {
+      const profileMain = document.getElementById('profileMain');
+      const mainContent = document.getElementById('mainContent');
+
+      if (profileMain && mainContent) {
+        mainContent.innerHTML = profileMain.innerHTML;
+        profileMain.remove();
+        profileMain.classList.remove('hidden');
+
+        // Now run profile logic
+        runProfileLogic();
+      } else {
+        setTimeout(initProfile, 100);
+      }
+    }
+
+    function runProfileLogic() {
+      // Check authentication
+      if (typeof SessionManager !== 'undefined' && !SessionManager.isAuthenticated()) {
+        window.location.href = '../login.html';
+        return;
+      }
+
+      // Initialize form handlers
+      initializeForms();
+
+      // Load user data
+      loadUserData();
+    }
+
+    function initializeForms() {
+      // Profile form submission
+      document.getElementById('profileForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        saveProfileChanges();
+      });
+
+      // Password form submission
+      document.getElementById('passwordForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        changePassword();
+      });
+    }
+
+    function loadUserData() {
+      // In a real app, this would fetch from API
+      // For now, we'll use the form values that are already populated
+    }
+
+    function saveProfileChanges() {
+      try {
+        const formData = {
+          fullName: document.getElementById('fullName').value,
+          email: document.getElementById('email').value,
+          phone: document.getElementById('phone').value,
+          department: document.getElementById('department').value,
+          bio: document.getElementById('bio').value
+        };
+
+        // In a real app, this would send to API
+        // Show success message
+        if (typeof NotificationManager !== 'undefined') {
+          NotificationManager.success('Profile updated successfully!');
+        } else {
+          alert('Profile updated successfully!');
+        }
+      } catch (error) {
+        console.error('Error saving profile:', error);
+        if (typeof NotificationManager !== 'undefined') {
+          NotificationManager.error('Failed to update profile');
+        } else {
+          alert('Failed to update profile');
+        }
+      }
+    }
+
+    function resetProfileForm() {
+      if (confirm('Are you sure you want to reset all changes?')) {
+        document.getElementById('fullName').value = 'Principal John Doe';
+        document.getElementById('email').value = 'principal@greenwood.edu';
+        document.getElementById('phone').value = '+91 98765 43210';
+        document.getElementById('department').value = 'Administration';
+        document.getElementById('bio').value = 'Experienced educational leader with 15+ years in school administration. Passionate about creating excellent learning environments and fostering student success.';
+
+        if (typeof NotificationManager !== 'undefined') {
+          NotificationManager.info('Form reset to original values');
+        }
+      }
+    }
+
+    function changeProfileImage() {
+      // In a real app, this would open file picker
+      if (typeof NotificationManager !== 'undefined') {
+        NotificationManager.info('Profile image upload feature coming soon');
+      } else {
+        alert('Profile image upload feature coming soon');
+      }
+    }
+
+    function toggle2FA() {
+      if (typeof NotificationManager !== 'undefined') {
+        NotificationManager.info('2FA setup feature coming soon');
+      } else {
+        alert('2FA setup feature coming soon');
+      }
+    }
+
+    function openPasswordModal() {
+      document.getElementById('passwordModal').classList.remove('hidden');
+    }
+
+    function closePasswordModal() {
+      document.getElementById('passwordModal').classList.add('hidden');
+      // Reset form
+      document.getElementById('passwordForm').reset();
+    }
+
+    function changePassword() {
+      try {
+        const form = document.getElementById('passwordForm');
+        const formData = new FormData(form);
+
+        // In a real app, this would validate and send to API
+        if (typeof NotificationManager !== 'undefined') {
+          NotificationManager.success('Password changed successfully!');
+        } else {
+          alert('Password changed successfully!');
+        }
+
+        closePasswordModal();
+      } catch (error) {
+        console.error('Error changing password:', error);
+        if (typeof NotificationManager !== 'undefined') {
+          NotificationManager.error('Failed to change password');
+        } else {
+          alert('Failed to change password');
+        }
+      }
+    }
+
+    function viewLoginActivity() {
+      if (typeof NotificationManager !== 'undefined') {
+        NotificationManager.info('Login activity feature coming soon');
+      } else {
+        alert('Login activity feature coming soon');
+      }
+    }
+
+    // Start initialization when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initProfile);
+    } else {
+      initProfile();
+    }
+  </script>
+</body>
+
+</html>

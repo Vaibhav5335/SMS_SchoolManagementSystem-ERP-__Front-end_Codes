@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>School Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          },
+          colors: {
+            brand: { 50: '#dcfce7', 100: '#bbf7d0', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 900: '#14532d' },
+            dark: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+            'slide-in': 'slideIn 0.4s ease-out forwards',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(15px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideIn: {
+              '0%': { opacity: '0', transform: 'translateX(-10px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    *:focus-visible {
+      outline: 2px solid #22c55e;
+      outline-offset: 2px;
+    }
+
+    /* Glassmorphism utilities */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .dark .glass {
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    /* Add left padding to main content area */
+    @media (min-width: 1024px) {
+      #mainContent {
+        padding-left: 1rem !important;
+      }
+    }
+  </style>
+</head>
+
+<body
+  class="min-h-screen bg-slate-50 text-slate-800 antialiased dark:bg-[#020617] dark:text-slate-200 transition-colors duration-300">
+  <div id="appShell"></div>
+
+  <main id="dashboardMain" class="hidden w-full max-w-[1600px] mx-auto py-8 animate-fade-in-up">
+    <br>
+    <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+      <div>
+        <div class="flex items-center gap-2 mb-2 opacity-80">
+          <span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400"
+            id="currentDate">Tuesday, Jan 13</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <span id="greeting">Good Afternoon</span>, Principal
+        </h1>
+        <p class="text-base text-slate-600 dark:text-slate-400 mt-2">
+          School Management Dashboard - <span class="font-bold text-brand-600 dark:text-brand-400">Greenwood High
+            School</span>
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Dark mode toggle is now in sidebar header -->
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Stats Cards -->
+      <div
+        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-blue-50 dark:bg-blue-900/10 rounded-bl-full -mr-4 -mt-4"></div>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Total Students</p>
+            <p class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2" id="totalStudents">1,245</p>
+          </div>
+          <div
+            class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <i class="fas fa-user-graduate text-xl"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <a href="user-management.html?type=students"
+            class="text-xs font-bold text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 transition-colors flex items-center gap-1">
+            View all <i class="fas fa-arrow-right text-[10px]"></i>
+          </a>
+        </div>
+      </div>
+
+      <div
+        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-purple-50 dark:bg-purple-900/10 rounded-bl-full -mr-4 -mt-4">
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Total Teachers</p>
+            <p class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2" id="totalTeachers">85</p>
+          </div>
+          <div
+            class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
+            <i class="fas fa-chalkboard-teacher text-xl"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <a href="user-management.html?type=teachers"
+            class="text-xs font-bold text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 transition-colors flex items-center gap-1">
+            View all <i class="fas fa-arrow-right text-[10px]"></i>
+          </a>
+        </div>
+      </div>
+
+      <div
+        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-green-50 dark:bg-green-900/10 rounded-bl-full -mr-4 -mt-4">
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Today's Attendance
+            </p>
+            <p class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2" id="attendancePercentage">92%</p>
+          </div>
+          <div
+            class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400">
+            <i class="fas fa-check-circle text-xl"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <span class="text-xs font-bold text-slate-600 dark:text-slate-400" id="presentCount">1,145 present</span>
+        </div>
+      </div>
+
+      <div
+        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-yellow-50 dark:bg-yellow-900/10 rounded-bl-full -mr-4 -mt-4">
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Monthly Revenue
+            </p>
+            <p class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2" id="monthlyRevenue">₹2.4L</p>
+          </div>
+          <div
+            class="w-12 h-12 rounded-xl bg-yellow-100 dark:bg-yellow-900/20 flex items-center justify-center text-yellow-600 dark:text-yellow-400">
+            <i class="fas fa-rupee-sign text-xl"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <a href="analytics.html"
+            class="text-xs font-bold text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 transition-colors flex items-center gap-1">
+            View report <i class="fas fa-arrow-right text-[10px]"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <a href="user-management.html"
+        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all group">
+        <div class="flex items-center space-x-4 mb-4">
+          <div
+            class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <i class="fas fa-users text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">User Management</h3>
+        </div>
+        <p class="text-slate-600 dark:text-slate-400 mb-4">Create and manage Teachers, Students, and Parents accounts
+        </p>
+        <span
+          class="text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1 group-hover:gap-2 transition-all">
+          Manage Users <i class="fas fa-arrow-right text-xs"></i>
+        </span>
+      </a>
+
+      <a href="academic-config.html"
+        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all group">
+        <div class="flex items-center space-x-4 mb-4">
+          <div
+            class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
+            <i class="fas fa-calendar-alt text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Academic Config</h3>
+        </div>
+        <p class="text-slate-600 dark:text-slate-400 mb-4">Set up timetables, calendars, and fee structures</p>
+        <span
+          class="text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1 group-hover:gap-2 transition-all">
+          Configure <i class="fas fa-arrow-right text-xs"></i>
+        </span>
+      </a>
+
+      <a href="analytics.html"
+        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all group">
+        <div class="flex items-center space-x-4 mb-4">
+          <div
+            class="w-12 h-12 rounded-xl bg-yellow-100 dark:bg-yellow-900/20 flex items-center justify-center text-yellow-600 dark:text-yellow-400">
+            <i class="fas fa-chart-bar text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Analytics</h3>
+        </div>
+        <p class="text-slate-600 dark:text-slate-400 mb-4">View revenue, attendance, and administrative reports</p>
+        <span
+          class="text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1 group-hover:gap-2 transition-all">
+          View Reports <i class="fas fa-arrow-right text-xs"></i>
+        </span>
+      </a>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <!-- Attendance Chart -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-bold text-slate-900 dark:text-white">Attendance Overview</h3>
+          <span class="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">Last 30
+            Days</span>
+        </div>
+        <div class="h-64 w-full relative">
+          <canvas id="attendanceChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Revenue Chart -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-bold text-slate-900 dark:text-white">Revenue Trend</h3>
+          <span class="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">This
+            Year</span>
+        </div>
+        <div class="h-64 w-full relative">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+      <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+        <i class="fas fa-clock text-brand-500"></i>Recent Activity
+      </h2>
+      <div class="space-y-4" id="recentActivity">
+        <!-- Activities will be loaded dynamically -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+  <script src="sidebar.js"></script>
+  <script src="../js/theme-manager.js"></script>
+
+  <script>
+    let CURRENT_ADMIN_ID = localStorage.getItem('adminId') || 'mock-admin-1';
+
+    // Wait for sidebar to be injected, then move dashboard content into mainContent
+    function initDashboard() {
+      const dashboardMain = document.getElementById('dashboardMain');
+      const mainContent = document.getElementById('mainContent');
+
+      if (dashboardMain && mainContent) {
+        mainContent.innerHTML = dashboardMain.innerHTML;
+        dashboardMain.remove();
+        dashboardMain.classList.remove('hidden');
+
+        // Now run dashboard logic
+        runDashboardLogic();
+      } else {
+        setTimeout(initDashboard, 100);
+      }
+    }
+
+    function runDashboardLogic() {
+      // 1. Time-based Greeting
+      const hour = new Date().getHours();
+      const greetingSpan = document.getElementById('greeting');
+      if (hour < 12) greetingSpan.innerText = "Good Morning";
+      else if (hour < 18) greetingSpan.innerText = "Good Afternoon";
+      else greetingSpan.innerText = "Good Evening";
+
+      // 2. Current Date
+      const options = { weekday: 'long', month: 'short', day: 'numeric' };
+      document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', options);
+
+      // 3. Load Dashboard Data with Error Handling
+      loadDashboardData();
+
+      // 4. Initialize Charts
+      initializeCharts();
+
+      // 5. Load Recent Activity
+      loadRecentActivity();
+    }
+
+    async function loadDashboardData() {
+      try {
+        // Load real-time data from multiple sources
+        const [studentsResult, teachersResult, attendanceResult, revenueResult] = await Promise.all([
+          dataService.getStudentsCount(),
+          dataService.getTeachersCount(),
+          dataService.getAttendanceSummary(),
+          dataService.getRevenueData()
+        ]);
+
+        // Update UI with real data
+        if (studentsResult.success) {
+          document.getElementById('totalStudents').textContent = studentsResult.data.count.toLocaleString();
+        }
+
+        if (teachersResult.success) {
+          document.getElementById('totalTeachers').textContent = teachersResult.data.count;
+        }
+
+        if (attendanceResult.success) {
+          document.getElementById('attendancePercentage').textContent = `${attendanceResult.data.percentage}%`;
+          document.getElementById('presentCount').textContent = `${attendanceResult.data.present} present`;
+        }
+
+        if (revenueResult.success) {
+          document.getElementById('monthlyRevenue').textContent = revenueResult.data.formatted;
+        }
+
+        errorHandler.showSuccess('Dashboard', 'Data loaded successfully!');
+      } catch (error) {
+        // Fallback to mock data
+        console.error('Dashboard data error:', error);
+        errorHandler.showWarning('Using Test Data', 'Connected to test data. Configure Supabase for real data.');
+      }
+    }
+
+    window.initializeCharts = function () {
+      try {
+        const isDark = document.documentElement.classList.contains('dark');
+        const textColor = isDark ? '#94a3b8' : '#64748b';
+        const gridColor = isDark ? '#334155' : '#e2e8f0';
+
+        // Attendance Chart (Line)
+        const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+        const attendanceGradient = attendanceCtx.createLinearGradient(0, 0, 0, 300);
+        attendanceGradient.addColorStop(0, 'rgba(34, 197, 94, 0.2)');
+        attendanceGradient.addColorStop(1, 'rgba(34, 197, 94, 0)');
+
+        window.attendanceChartInstance = new Chart(attendanceCtx, {
+          type: 'line',
+          data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [{
+              label: 'Attendance %',
+              data: [88, 91, 93, 92],
+              borderColor: '#22c55e',
+              backgroundColor: attendanceGradient,
+              fill: true,
+              tension: 0.4,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                titleColor: isDark ? '#f1f5f9' : '#1e293b',
+                bodyColor: isDark ? '#cbd5e1' : '#334155',
+                borderColor: isDark ? '#334155' : '#e2e8f0',
+                borderWidth: 1
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: gridColor },
+                ticks: { color: textColor }
+              },
+              y: {
+                grid: { color: gridColor },
+                ticks: { color: textColor, callback: function (value) { return value + '%'; } }
+              }
+            }
+          }
+        });
+
+        // Revenue Chart (Bar)
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueGradient = revenueCtx.createLinearGradient(0, 0, 0, 300);
+        revenueGradient.addColorStop(0, 'rgba(234, 179, 8, 0.2)');
+        revenueGradient.addColorStop(1, 'rgba(234, 179, 8, 0)');
+
+        window.revenueChartInstance = new Chart(revenueCtx, {
+          type: 'bar',
+          data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+              label: 'Revenue (₹)',
+              data: [240000, 235000, 250000, 245000, 260000, 255000],
+              backgroundColor: revenueGradient,
+              borderColor: '#eab308',
+              borderWidth: 2,
+              borderRadius: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                titleColor: isDark ? '#f1f5f9' : '#1e293b',
+                bodyColor: isDark ? '#cbd5e1' : '#334155',
+                borderColor: isDark ? '#334155' : '#e2e8f0',
+                borderWidth: 1,
+                callbacks: {
+                  label: function (context) {
+                    return '₹' + context.parsed.y.toLocaleString();
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: textColor }
+              },
+              y: {
+                grid: { color: gridColor },
+                ticks: {
+                  color: textColor,
+                  callback: function (value) {
+                    return '₹' + (value / 1000) + 'K';
+                  }
+                }
+              }
+            }
+          }
+        });
+
+      } catch (error) {
+        errorHandler.showError('Chart Error', 'Failed to initialize charts.');
+        console.error('Chart initialization error:', error);
+      }
+    };
+
+    function loadRecentActivity() {
+      const activityContainer = document.getElementById('recentActivity');
+
+      // Mock activity data - in real app, fetch from API
+      const activities = [
+        {
+          id: 1,
+          type: 'student',
+          title: 'New Student Admitted',
+          description: 'Rahul Sharma - Class 5A',
+          time: '1 hour ago',
+          icon: 'fa-user-plus',
+          color: 'green'
+        },
+        {
+          id: 2,
+          type: 'teacher',
+          title: 'Teacher Assigned',
+          description: 'Mrs. Priya Singh assigned to Class 8B',
+          time: '3 hours ago',
+          icon: 'fa-chalkboard-teacher',
+          color: 'blue'
+        },
+        {
+          id: 3,
+          type: 'finance',
+          title: 'Fee Payment Received',
+          description: '₹15,000 from 3 parents',
+          time: '5 hours ago',
+          icon: 'fa-rupee-sign',
+          color: 'yellow'
+        },
+        {
+          id: 4,
+          type: 'academic',
+          title: 'Timetable Updated',
+          description: 'Class 9A schedule modified',
+          time: '1 day ago',
+          icon: 'fa-clock',
+          color: 'purple'
+        }
+      ];
+
+      activityContainer.innerHTML = activities.map(activity => `
+        <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700/50">
+          <div class="flex items-center space-x-4">
+            <div class="w-10 h-10 rounded-full bg-${activity.color}-100 dark:bg-${activity.color}-900/20 flex items-center justify-center">
+              <i class="fas ${activity.icon} text-${activity.color}-600 dark:text-${activity.color}-400"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-slate-900 dark:text-white">${activity.title}</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400">${activity.description}</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400">${activity.time}</span>
+        </div>
+      `).join('');
+    }
+
+    // Start initialization when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDashboard);
+    } else {
+      initDashboard();
+    }
+  </script>
+
+
+
+  <!-- Auth Guard (Protect this page) -->
+  <script src="../js/auth-guard.js"></script>
+
+  <!-- New Features -->
+  <script src="../js/global-search.js"></script>
+  <script src="../js/notification-service.js"></script>
+  <script src="../js/export-service.js"></script>
+
+</body>
+
+</html>

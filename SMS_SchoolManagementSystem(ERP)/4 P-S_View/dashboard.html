@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard - Parent Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: { 
+            sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          },
+          colors: {
+            brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' },
+            dark: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+            'slide-in': 'slideIn 0.4s ease-out forwards',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(15px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideIn: {
+              '0%': { opacity: '0', transform: 'translateX(-10px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    *:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
+    
+    /* Glassmorphism utilities */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .dark .glass {
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-800 antialiased dark:bg-[#020617] dark:text-slate-200 transition-colors duration-300 pb-20">
+
+  <div id="appShell"></div>
+
+  <main class="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
+
+    <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+      <div>
+        <div class="flex items-center gap-2 mb-2 opacity-80">
+          <span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400" id="currentDate">Tuesday, Jan 13</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <span id="greeting">Good Afternoon</span>, Mr. Kumar
+        </h1>
+        <p class="text-base text-slate-600 dark:text-slate-400 mt-2">
+          Here is the daily overview for <span class="font-bold text-brand-600 dark:text-brand-400">Rishu Kumar</span> (Class 12th).
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="finance.html" class="flex items-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-5 py-3 rounded-xl font-bold shadow-sm border border-slate-200 dark:border-slate-700 transition-all active:scale-95">
+          <i class="fas fa-credit-card text-brand-500"></i>
+          <span>Pay Fees</span>
+        </a>
+        <a href="apply-leave.html" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold shadow-lg shadow-brand-500/20 transition-all active:scale-95">
+          <i class="fas fa-plus"></i>
+          <span>Apply Leave</span>
+        </a>
+      </div>
+    </header>
+
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <div class="md:col-span-2 relative bg-gradient-to-br from-brand-600 to-indigo-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl overflow-hidden group">
+        <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700"></div>
+        <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-40 h-40 bg-purple-500 opacity-20 rounded-full blur-2xl"></div>
+
+        <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <div class="relative">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white/20 backdrop-blur-md p-1 border border-white/30 shadow-inner">
+              <img src="https://ui-avatars.com/api/?name=Rishu+Kumar&background=random&size=200" alt="Student" class="w-full h-full rounded-xl object-cover">
+            </div>
+            <div class="absolute -bottom-2 -right-2 bg-emerald-400 text-emerald-900 text-[10px] font-black px-2 py-1 rounded-lg border-2 border-brand-700 shadow-sm">
+              95% ATT
+            </div>
+          </div>
+          
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-1">
+              <h2 class="text-2xl font-bold">Rishu Kumar</h2>
+              <span class="bg-white/20 px-2 py-0.5 rounded text-xs font-bold border border-white/20">Roll #25</span>
+            </div>
+            <p class="text-blue-100 font-medium mb-4">Science Stream • Year 2026</p>
+            
+            <div class="flex flex-wrap gap-3">
+              <div class="bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-white/10 flex items-center gap-2">
+                <i class="fas fa-star text-yellow-300 text-xs"></i>
+                <span class="text-xs font-bold">Percentile: 87%</span>
+              </div>
+              <div class="bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-white/10 flex items-center gap-2">
+                <i class="fas fa-trophy text-orange-300 text-xs"></i>
+                <span class="text-xs font-bold">Rank: #12</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-red-50 dark:bg-red-900/10 rounded-bl-full -mr-4 -mt-4"></div>
+        
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Up Next</p>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white">Mathematics</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Wednesday, 14 Jan 2026</p>
+        </div>
+
+        <div class="mt-4">
+          <div class="flex items-end gap-2">
+            <span class="text-4xl font-extrabold text-slate-900 dark:text-white">02</span>
+            <span class="text-sm font-bold text-slate-400 mb-1.5">Days Left</span>
+          </div>
+          <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 mt-3">
+            <div class="bg-red-500 h-1.5 rounded-full" style="width: 85%"></div>
+          </div>
+        </div>
+      </div>
+
+      <a href="attendance.html" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow group">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Attendance</p>
+            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2">88%</h3>
+            <p class="text-xs font-bold text-emerald-600 mt-1">Good Standing</p>
+          </div>
+          <div class="w-12 h-12 relative">
+             <canvas id="miniAttendanceChart"></canvas>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 mt-6 group-hover:text-brand-600 transition-colors font-bold flex items-center gap-1">
+          View Full Report <i class="fas fa-arrow-right"></i>
+        </p>
+      </a>
+
+      <div class="md:col-span-1 lg:row-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm h-full flex flex-col">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <i class="far fa-clock text-brand-500"></i> Today's Schedule
+          </h3>
+          <span class="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">5 Classes</span>
+        </div>
+
+        <div class="flex-1 overflow-y-auto no-scrollbar space-y-0 relative">
+          <div class="absolute left-[19px] top-2 bottom-2 w-0.5 bg-slate-100 dark:bg-slate-800"></div>
+
+          <div class="relative pl-10 pb-6 group">
+            <div class="absolute left-0 top-1.5 w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 z-10">
+               <div class="w-3 h-3 rounded-full bg-brand-500 ring-4 ring-brand-100 dark:ring-brand-900/30 animate-pulse"></div>
+            </div>
+            <div class="bg-brand-50 dark:bg-brand-900/10 p-3 rounded-xl border border-brand-100 dark:border-brand-500/20">
+              <div class="flex justify-between items-start">
+                <h4 class="text-sm font-bold text-slate-900 dark:text-white">Physics</h4>
+                <span class="text-[10px] font-bold bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded text-brand-600">Now</span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">09:00 AM - 10:00 AM • Room 12</p>
+            </div>
+          </div>
+
+          <div class="relative pl-10 pb-6 group">
+            <div class="absolute left-0 top-1.5 w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 z-10">
+               <div class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-900 dark:text-white opacity-75">Chemistry</h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">10:00 AM - 11:00 AM • Lab 2</p>
+            </div>
+          </div>
+
+          <div class="relative pl-10 pb-6 group">
+            <div class="absolute left-0 top-1.5 w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 z-10">
+               <div class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-900 dark:text-white opacity-75">Mathematics</h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">11:00 AM - 12:00 PM • Room 15</p>
+            </div>
+          </div>
+
+           <div class="relative pl-10 group">
+            <div class="absolute left-0 top-1.5 w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 z-10">
+               <div class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-900 dark:text-white opacity-75">English</h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">12:00 PM - 01:00 PM • Room 10</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="md:col-span-2 lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h3 class="font-bold text-slate-900 dark:text-white">Performance Trend</h3>
+            <p class="text-xs text-slate-500">Last 5 Terms (Percentile)</p>
+          </div>
+          <a href="stats.html" class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-brand-600 transition-colors">
+            <i class="fas fa-external-link-alt text-xs"></i>
+          </a>
+        </div>
+        <div class="h-40 w-full relative">
+          <canvas id="dashboardTrendChart"></canvas>
+        </div>
+      </div>
+
+      <div class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-500/20 rounded-3xl p-6 shadow-sm flex flex-col justify-center">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-4">
+          <i class="fas fa-exclamation-circle text-lg animate-pulse-slow"></i>
+        </div>
+        <h3 class="font-bold text-slate-900 dark:text-white">Fee Pending</h3>
+        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-4">December Tuition fee is due.</p>
+        <div class="flex items-center justify-between">
+          <span class="text-xl font-black text-slate-900 dark:text-white">₹5,000</span>
+          <a href="finance.html" class="text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg transition-colors">Pay Now</a>
+        </div>
+      </div>
+
+      <div class="md:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
+          <i class="fas fa-bullhorn"></i>
+        </div>
+        <div>
+          <div class="flex justify-between items-start w-full">
+             <h3 class="font-bold text-slate-900 dark:text-white text-sm">Annual Sports Meet Registration</h3>
+             <span class="text-[10px] text-slate-400 font-bold">2h ago</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed line-clamp-2">
+            Registration for the annual inter-school sports meet is now open. Students interested in Track & Field events must submit their names to the PET by Friday.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Supabase Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Data & Error Management -->
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/data-service.js"></script>
+  <script src="../js/error-handler.js"></script>
+
+  <script src="sidebar.js"></script>
+  <script src="../js/theme-manager.js"></script>
+
+  <script>
+    // Get current student ID (should come from login/session)
+    const CURRENT_STUDENT_ID = localStorage.getItem('studentId') || 'mock-student-1';
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      
+      // 1. Time-based Greeting
+      const hour = new Date().getHours();
+      const greetingSpan = document.getElementById('greeting');
+      if (hour < 12) greetingSpan.innerText = "Good Morning";
+      else if (hour < 18) greetingSpan.innerText = "Good Afternoon";
+      else greetingSpan.innerText = "Good Evening";
+
+      // 2. Current Date
+      const options = { weekday: 'long', month: 'short', day: 'numeric' };
+      document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', options);
+
+      // 3. Load Student Data with Error Handling
+      await loadStudentData();
+      
+      // 4. Load Attendance Data with Error Handling
+      await loadAttendanceData();
+
+      // 5. Initialize Charts
+      initializeCharts();
+    });
+
+    async function loadStudentData() {
+      try {
+        const result = await dataService.getStudentData(CURRENT_STUDENT_ID);
+        
+        if (result.success) {
+          const student = result.data;
+          // Update UI with student data (card already has hardcoded values)
+          errorHandler.showSuccess('Loaded', 'Student data retrieved successfully!');
+        } else {
+          // Fall back to mock data if Supabase is not configured
+          const mockData = dataService.getMockStudentData();
+          errorHandler.showWarning('Using Test Data', 'Connected to test data. Configure Supabase for real data.');
+        }
+      } catch (error) {
+        errorHandler.showWarning('Student Data', 'Using cached student information.');
+        console.error('Student data error:', error);
+      }
+    }
+
+    async function loadAttendanceData() {
+      try {
+        const result = await dataService.getAttendanceSummary(CURRENT_STUDENT_ID);
+        
+        if (result.success) {
+          const attendance = result.data;
+          updateAttendanceStats(attendance);
+        } else {
+          const mockData = dataService.getMockAttendanceData();
+          updateAttendanceStats(mockData);
+          errorHandler.showWarning('Test Data', 'Using sample attendance data.');
+        }
+      } catch (error) {
+        errorHandler.showWarning('Attendance Data', 'Using cached attendance data.');
+        console.error('Attendance error:', error);
+      }
+    }
+
+    function updateAttendanceStats(attendance) {
+      // Update attendance percentage in card
+      const attendancePercentage = document.querySelector('[data-attendance-percentage]');
+      if (attendancePercentage) {
+        attendancePercentage.textContent = `${attendance.percentage}%`;
+      }
+      
+      // Update doughnut chart if it exists
+      const chartElement = document.getElementById('miniAttendanceChart');
+      if (chartElement && window.miniAttendanceChartInstance) {
+        window.miniAttendanceChartInstance.data.datasets[0].data = [attendance.present, attendance.absent];
+        window.miniAttendanceChartInstance.update();
+      }
+    }
+
+    function initializeCharts() {
+      try {
+        const isDark = document.documentElement.classList.contains('dark');
+        const textColor = isDark ? '#94a3b8' : '#64748b';
+        const gridColor = isDark ? '#334155' : '#e2e8f0';
+
+        // Mini Attendance Chart (Doughnut)
+        const miniChartElement = document.getElementById('miniAttendanceChart');
+        if (miniChartElement) {
+          window.miniAttendanceChartInstance = new Chart(miniChartElement, {
+            type: 'doughnut',
+            data: {
+              labels: ['Present', 'Absent'],
+              datasets: [{
+                data: [85, 15],
+                backgroundColor: ['#10b981', '#f1f5f9'],
+                borderWidth: 0,
+                hoverOffset: 0
+              }]
+            },
+            options: {
+              cutout: '75%',
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false }, tooltip: { enabled: false } },
+              events: []
+            }
+          });
+        }
+
+        // Dashboard Trend Chart (Line)
+        const trendChartElement = document.getElementById('dashboardTrendChart');
+        if (trendChartElement) {
+          const ctxTrend = trendChartElement.getContext('2d');
+          const gradient = ctxTrend.createLinearGradient(0, 0, 0, 300);
+          gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
+          gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+          window.dashboardTrendChartInstance = new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+              labels: ['Term 1', 'Term 2', 'Term 3', 'Term 4', 'Term 5'],
+              datasets: [{
+                data: [75, 78, 81, 84, 87],
+                borderColor: '#3b82f6',
+                backgroundColor: gradient,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 4,
+                borderWidth: 2
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { display: false },
+                y: { display: false, min: 0, max: 100 }
+              },
+              layout: { padding: 0 }
+            }
+          });
+        }
+      } catch (error) {
+        errorHandler.showError('Chart Error', 'Failed to initialize charts.');
+        console.error('Chart initialization error:', error);
+      }
+    }
+  </script>
+
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/global-search.js"></script>
+  <script src="../js/notification-service.js"></script>
+  <script src="../js/export-service.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" class="antialiased">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hall Ticket - Parent Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="description" content="Student Admit Card / Hall Ticket for Semester Examinations" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' }
+          },
+          screens: {
+            'print': { 'raw': 'print' },
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Utilities */
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-45deg);
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900;
+      color: rgba(0, 0, 0, 0.04);
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 0;
+      user-select: none;
+    }
+    
+    .dark .watermark {
+      color: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Print Specific Overrides */
+    @media print {
+      @page { margin: 0.5cm; size: auto; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white !important; }
+      
+      /* Force visibility of ticket */
+      #ticket-container {
+        box-shadow: none !important;
+        border: 2px solid #000 !important;
+        page-break-inside: avoid;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+
+      /* Ensure text is black for saving ink unless colored intentionally */
+      p, h1, h2, h3, h4, h5, h6, td, th { color: #000 !important; }
+      .print\:text-brand { color: #2563eb !important; } /* Keep brand color if needed */
+    }
+
+    /* Smooth Fade In */
+    .fade-in { animation: fadeIn 0.5s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200 min-h-screen flex flex-col transition-colors duration-300">
+
+  <!-- ✅ Sidebar + Topbar injected here -->
+  <div id="appShell"></div>
+
+  <!-- ✅ Keep your existing theme toggle (now integrated with central theme manager) -->
+  <button onclick="toggleDarkMode()" aria-label="Toggle Dark Mode" class="fixed bottom-6 right-6 z-50 p-4 rounded-full bg-slate-800 text-yellow-400 dark:bg-white dark:text-slate-900 shadow-xl hover:scale-110 transition-transform print:hidden">
+    <i class="fas fa-sun dark:hidden"></i>
+    <i class="fas fa-moon hidden dark:block"></i>
+  </button>
+
+  <!-- ✅ PAGE CONTENT ONLY -->
+  <!-- This <main> will be moved automatically inside #pageContent by sidebar.js -->
+  <main class="flex-grow px-4 sm:px-6 py-8 max-w-5xl mx-auto w-full fade-in">
+
+    <header class="mb-8 print:hidden">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <p class="text-xs tracking-[0.2em] font-bold text-slate-400 dark:text-slate-500 uppercase mb-1">Parent Portal</p>
+          <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Admit Card</h1>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-md">
+            Download or print your hall ticket. Ensure all details are correct before entering the exam hall.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="window.print()"
+            class="group w-full md:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 focus:ring-4 focus:ring-brand-500/30 text-white font-bold shadow-lg shadow-brand-600/20 transition-all active:scale-95 touch-manipulation">
+            <i class="fas fa-print mr-2 group-hover:animate-pulse"></i>
+            <span>Print Hall Ticket</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <section role="alert" class="print:hidden mb-8 bg-amber-50 dark:bg-amber-900/20 border border-amber-200/60 dark:border-amber-700/50 rounded-2xl p-4 sm:p-5 shadow-sm transition-colors">
+      <div class="flex gap-4">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+          <i class="fas fa-exclamation-triangle text-lg"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-900 dark:text-amber-100 text-sm sm:text-base">Examination Instructions</h3>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-amber-200/80 mt-1 leading-relaxed">
+            Please carry a hard copy of this Hall Ticket and a valid College ID Card. Electronic gadgets (Mobile, Smartwatch) are strictly prohibited inside the hall.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <article id="ticket-container" 
+      class="bg-white dark:bg-slate-950 shadow-2xl shadow-slate-200/50 dark:shadow-none rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden print:border-2 print:shadow-none">
+
+      <div class="h-2 w-full bg-gradient-to-r from-brand-600 via-purple-600 to-brand-600 print:bg-none print:bg-slate-800"></div>
+
+      <div class="watermark">SIS&amp;T OFFICIAL</div>
+
+      <div class="p-6 sm:p-8 relative z-10">
+
+        <header class="flex flex-col md:flex-row justify-between items-center border-b-2 border-slate-100 dark:border-slate-800 pb-6 mb-6 gap-6 md:gap-0">
+          <div class="flex items-center gap-4 text-center md:text-left">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-xl bg-slate-50 dark:bg-white border border-slate-100 flex items-center justify-center overflow-hidden">
+               <img src="assets/logo.png" onerror="this.src='https://via.placeholder.com/80?text=LOGO'" 
+               class="w-full h-full object-contain p-1" alt="Institute Logo">
+            </div>
+            
+            <div>
+              <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white uppercase leading-tight tracking-tight">
+                Sagar Institute of <br class="hidden sm:block" />Science &amp; Tech
+              </h2>
+              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
+                <i class="fas fa-map-marker-alt mr-1"></i> Gandhi Nagar, Bhopal, M.P.
+              </p>
+            </div>
+          </div>
+
+          <div class="text-center md:text-right">
+            <div class="inline-block bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 px-4 py-1.5 rounded-full border border-brand-100 dark:border-brand-800 print:border-slate-300">
+              <span class="text-xs font-bold uppercase tracking-wide">Jan-June 2026 Session</span>
+            </div>
+            <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-2 uppercase tracking-wide">Hall Ticket</h3>
+          </div>
+        </header>
+
+        <section class="flex flex-col-reverse lg:flex-row gap-8 mb-8">
+          
+          <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-5 gap-x-4">
+            
+            <div class="sm:col-span-1 lg:col-span-2">
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-bold tracking-wider mb-0.5">Student Name</p>
+              <p class="font-bold text-slate-900 dark:text-white text-base sm:text-lg truncate">RISHU KUMAR</p>
+            </div>
+
+            <div class="sm:col-span-1 lg:col-span-2">
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-bold tracking-wider mb-0.5">Enrollment No.</p>
+              <p class="font-mono font-bold text-slate-900 dark:text-white text-base sm:text-lg">12THSC001234</p>
+            </div>
+
+            <div>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-bold tracking-wider mb-0.5">Branch</p>
+              <p class="font-semibold text-slate-700 dark:text-slate-200">Science</p>
+            </div>
+
+            <div>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-bold tracking-wider mb-0.5">Semester</p>
+              <p class="font-semibold text-slate-700 dark:text-slate-200">XII (Twelfth)</p>
+            </div>
+
+            <div>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-bold tracking-wider mb-0.5">Status</p>
+              <p class="font-semibold text-green-600 dark:text-green-400 print:text-black">Regular</p>
+            </div>
+
+             <div>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-bold tracking-wider mb-0.5">Gender</p>
+              <p class="font-semibold text-slate-700 dark:text-slate-200">Male</p>
+            </div>
+
+            <div class="sm:col-span-2 lg:col-span-4 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-800 print:bg-transparent print:border-none print:p-0">
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-bold tracking-wider mb-1">Exam Center</p>
+              <p class="font-bold text-slate-800 dark:text-slate-200 text-sm leading-snug">
+                SIS&amp;T Main Campus, Lecture Hall Complex, Block A, Room No. 204
+              </p>
+            </div>
+          </div>
+
+          <div class="flex justify-center sm:justify-start lg:justify-end gap-3 shrink-0">
+            <div class="w-28 h-32 bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700 shadow-sm print:shadow-none">
+              <img src="https://ui-avatars.com/api/?name=Rishu+Kumar&background=random&color=fff&size=128" 
+                class="w-full h-full object-cover rounded" alt="Student Photo">
+            </div>
+            <div class="w-28 h-32 bg-white dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center relative overflow-hidden print:shadow-none">
+              <div class="absolute inset-0 flex items-center justify-center opacity-10">
+                <i class="fas fa-signature text-4xl"></i>
+              </div>
+              <p class="text-[10px] text-slate-400 text-center px-2 mt-auto pb-2">Student Signature</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="mb-8">
+            <h4 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Examination Schedule</h4>
+            
+            <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+              <table class="w-full text-left text-sm whitespace-nowrap">
+                <thead class="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-bold text-xs uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
+                  <tr>
+                    <th scope="col" class="px-6 py-4">Date &amp; Time</th>
+                    <th scope="col" class="px-6 py-4">Sub Code</th>
+                    <th scope="col" class="px-6 py-4 w-full">Subject Name</th>
+                    <th scope="col" class="px-6 py-4 text-right print:block hidden">Invigilator</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
+                  <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
+                    <td class="px-6 py-4">
+                      <span class="block font-bold text-slate-900 dark:text-white">08 Jan 2026</span>
+                      <span class="text-xs text-slate-500 font-medium">10:00 AM - 01:00 PM</span>
+                    </td>
+                    <td class="px-6 py-4 font-mono font-bold text-brand-600 dark:text-brand-400 print:text-black">MA-121</td>
+                    <td class="px-6 py-4 font-medium text-slate-700 dark:text-slate-300">Mathematics</td>
+                    <td class="px-6 py-4 border-b border-slate-200 print:block hidden"></td> 
+                  </tr>
+                  
+                  <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
+                    <td class="px-6 py-4">
+                      <span class="block font-bold text-slate-900 dark:text-white">12 Jan 2026</span>
+                      <span class="text-xs text-slate-500 font-medium">10:00 AM - 01:00 PM</span>
+                    </td>
+                    <td class="px-6 py-4 font-mono font-bold text-brand-600 dark:text-brand-400 print:text-black">PH-122</td>
+                    <td class="px-6 py-4 font-medium text-slate-700 dark:text-slate-300">Physics</td>
+                     <td class="px-6 py-4 border-b border-slate-200 print:block hidden"></td>
+                  </tr>
+
+                  <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
+                    <td class="px-6 py-4">
+                      <span class="block font-bold text-slate-900 dark:text-white">15 Jan 2026</span>
+                      <span class="text-xs text-slate-500 font-medium">10:00 AM - 01:00 PM</span>
+                    </td>
+                    <td class="px-6 py-4 font-mono font-bold text-brand-600 dark:text-brand-400 print:text-black">CH-123</td>
+                    <td class="px-6 py-4 font-medium text-slate-700 dark:text-slate-300">Chemistry</td>
+                     <td class="px-6 py-4 border-b border-slate-200 print:block hidden"></td>
+                  </tr>
+
+                  <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
+                    <td class="px-6 py-4">
+                      <span class="block font-bold text-slate-900 dark:text-white">19 Jan 2026</span>
+                      <span class="text-xs text-slate-500 font-medium">10:00 AM - 01:00 PM</span>
+                    </td>
+                    <td class="px-6 py-4 font-mono font-bold text-brand-600 dark:text-brand-400 print:text-black">EN-124</td>
+                    <td class="px-6 py-4 font-medium text-slate-700 dark:text-slate-300">English</td>
+                     <td class="px-6 py-4 border-b border-slate-200 print:block hidden"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+        </section>
+
+        <footer class="flex flex-col sm:flex-row justify-between items-end gap-8 pt-8 mt-4 border-t-2 border-slate-100 dark:border-slate-800">
+          <div class="text-center w-full sm:w-auto">
+             <div class="h-16 w-16 mx-auto bg-white p-1 rounded-lg border border-slate-200 dark:border-slate-700 mb-2 flex items-center justify-center">
+              <i class="fas fa-qrcode text-5xl text-slate-800"></i>
+            </div>
+            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Auth: 8X92A</p>
+          </div>
+
+          <div class="flex gap-8 w-full sm:w-auto justify-center sm:justify-end">
+            <div class="text-center group">
+              <div class="h-10 w-32 border-b-2 border-slate-300 dark:border-slate-600 mb-2 relative"></div>
+              <p class="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">Controller of Exams</p>
+            </div>
+            <div class="text-center group">
+              <div class="h-10 w-32 border-b-2 border-slate-300 dark:border-slate-600 mb-2"></div>
+              <p class="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">Principal Seal</p>
+            </div>
+          </div>
+        </footer>
+
+      </div>
+
+      <div class="h-1.5 w-full flex">
+        <div class="w-1/4 bg-brand-500"></div>
+        <div class="w-1/4 bg-amber-400"></div>
+        <div class="w-1/4 bg-red-500"></div>
+        <div class="w-1/4 bg-emerald-500"></div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- ✅ Inject sidebar/topbar -->
+  <script src="../js/theme-manager.js"></script>
+  <script src="sidebar.js"></script>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/global-search.js"></script>
+  <script src="../js/notification-service.js"></script>
+  <script src="../js/export-service.js"></script>
+
+</body>
+</html>

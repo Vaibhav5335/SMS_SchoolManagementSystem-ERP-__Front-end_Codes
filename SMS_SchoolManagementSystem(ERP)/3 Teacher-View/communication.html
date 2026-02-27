@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent Communication - Teacher Portal</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif']
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a'
+            }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.6s ease-out'
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Plus Jakarta Sans Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    /* Scrollbar Styling - Hide by default */
+    html, body { scrollbar-width: none; }
+    html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    
+    /* Focus States */
+    *:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
+    input:focus, select:focus, textarea:focus { 
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), inset 0 0 0 1px #3b82f6;
+    }
+    
+    /* Button States */
+    button, [role="button"] {
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    button:hover, [role="button"]:hover {
+      transform: translateY(-1px);
+    }
+    button:active, [role="button"]:active {
+      transform: translateY(0);
+    }
+    
+    /* Card Hover Effects */
+    .card-hover {
+      transition: all 200ms ease;
+    }
+    .card-hover:hover {
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    /* Add left padding to main content area */
+    @media (min-width: 1024px) {
+      #mainContent {
+        padding-left: 1rem !important;
+      }
+    }
+  </style>
+
+  <script>
+    // Ensure light theme is default on page load
+    (function() {
+      const html = document.documentElement;
+      const theme = localStorage.getItem('theme') || 'light';
+      if (theme === 'dark') {
+        html.classList.add('dark');
+      } else {
+        html.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+
+  <div id="appShell"></div>
+
+  <main id="communicationMain" class="hidden w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
+<br>
+    <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="inline-block w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+          <p class="text-[11px] tracking-[0.2em] font-bold text-slate-500 dark:text-slate-400 uppercase">Parent Engagement</p>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Parent Communication
+        </h1>
+        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-2">
+          Stay connected with parents and manage announcements effectively.
+        </p>
+      </div>
+    </header>
+
+    <!-- Tabs for switching between messaging and announcements -->
+    <div class="flex gap-2 mb-8 border-b border-slate-200 dark:border-slate-800">
+      <button onclick="switchTab('messages')" id="messagesTab" class="px-6 py-3 font-bold text-brand-600 border-b-2 border-brand-600">
+        <i class="fas fa-comments mr-2"></i>Messages
+      </button>
+      <button onclick="switchTab('announcements')" id="announcementsTab" class="px-6 py-3 font-bold text-slate-500 dark:text-slate-400 border-b-2 border-transparent">
+        <i class="fas fa-megaphone mr-2"></i>Announcements
+      </button>
+    </div>
+
+    <!-- Messages Section -->
+    <section id="messagesSection" class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Parent List -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden flex flex-col shadow-sm">
+        <div class="p-6 border-b border-slate-200 dark:border-slate-800">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4">
+            <i class="fas fa-users mr-2 text-brand-600"></i>Parents
+          </h2>
+          <div class="relative">
+            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-600"></i>
+            <input type="text" placeholder="Search..." 
+              class="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-lg focus:ring-2 focus:ring-brand-500 text-sm">
+          </div>
+        </div>
+        <div id="parentsList" class="flex-1 divide-y divide-slate-200 dark:divide-slate-800 overflow-y-auto scrollbar-hide">
+          <!-- Parent items will be generated here -->
+        </div>
+      </div>
+
+      <!-- Conversation -->
+      <div class="lg:col-span-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl flex flex-col shadow-sm h-[600px]">
+        <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white" id="selectedParentName">Select a parent to chat</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" id="selectedParentStatus">-</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition">
+              <i class="fas fa-phone text-lg"></i>
+            </button>
+            <button class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition">
+              <i class="fas fa-video text-lg"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="messagesContainer" class="flex-1 overflow-y-auto scrollbar-hide p-6 space-y-4 flex flex-col justify-end">
+          <p class="text-center text-slate-500 dark:text-slate-400 text-sm italic">Select a parent to view conversation</p>
+        </div>
+
+        <div id="messageInputContainer" class="hidden p-6 border-t border-slate-200 dark:border-slate-800">
+          <form id="messageForm" class="flex gap-3">
+            <input type="text" id="messageInput" placeholder="Type your message..." 
+              class="flex-1 px-4 py-3 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500 font-medium">
+            <button type="submit" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold shadow-lg shadow-brand-500/20 transition-all active:scale-95">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Announcements Section (Hidden by default) -->
+    <section id="announcementsSection" class="hidden">
+      <!-- Create Announcement Form -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm mb-8">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-6">
+          <i class="fas fa-bullhorn mr-2 text-brand-600"></i>Create Announcement
+        </h2>
+        
+        <form id="announcementForm" class="space-y-6">
+          <div>
+            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wide">Select Audience</label>
+            <select id="audienceSelect" required class="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500 font-medium">
+              <option value="">Choose recipients...</option>
+              <option value="all">All Parents</option>
+              <option value="class8B">Class 8B Parents</option>
+              <option value="class5A">Class 5A Parents</option>
+              <option value="class6C">Class 6C Parents</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wide">Title</label>
+            <input type="text" id="announcementTitle" required placeholder="e.g., Sports Day Announcement" 
+              class="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500 font-medium">
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wide">Message</label>
+            <textarea id="announcementMessage" required rows="5" placeholder="Enter your announcement..." 
+              class="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500 font-medium"></textarea>
+          </div>
+
+          <button type="submit" class="flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-brand-500/20 transition-all active:scale-95 w-full md:w-auto">
+            <i class="fas fa-paper-plane"></i>
+            <span>Send Announcement</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Announcements List -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-6">
+          <i class="fas fa-history mr-2 text-amber-600"></i>Recent Announcements
+        </h2>
+        <div id="announcementsList" class="space-y-4">
+          <!-- Announcements will be generated here -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/data-service.js"></script>
+  <script src="../js/error-handler.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="../js/theme-manager.js"></script>
+
+
+  <script>
+    // Sample parent data and messages
+    const parents = [
+      {id: 'P001', name: 'Mr. Ramesh Sharma', student: 'Rahul Sharma (Class 5A)', lastMessage: 'Thank you for the update', onlineStatus: true},
+      {id: 'P002', name: 'Mrs. Sunita Patel', student: 'Priya Patel (Class 8B)', lastMessage: 'Okay, thank you', onlineStatus: false},
+      {id: 'P003', name: 'Mr. Amit Kumar', student: 'Vivek Kumar (Class 6C)', lastMessage: '', onlineStatus: true},
+      {id: 'P004', name: 'Mrs. Neha Singh', student: 'Pooja Singh (Class 7D)', lastMessage: '', onlineStatus: true}
+    ];
+
+    const conversations = {
+      'P001': [
+        {sender: 'parent', message: 'Hello ma\'am, I wanted to discuss Rahul\'s progress in Mathematics.', time: 'Oct 15, 10:30 AM'},
+        {sender: 'teacher', message: 'Hello! Yes, Rahul is doing well. He scored 85% in the last test.', time: 'Oct 15, 10:35 AM'},
+        {sender: 'parent', message: 'That\'s great! Thank you for the update.', time: 'Oct 15, 10:40 AM'}
+      ],
+      'P002': [
+        {sender: 'teacher', message: 'Hello, I wanted to inform you that Priya has been selected for the science fair.', time: 'Oct 14, 2:00 PM'},
+        {sender: 'parent', message: 'That\'s wonderful news! Thank you for informing us.', time: 'Oct 14, 2:15 PM'}
+      ]
+    };
+
+    let announcements = [
+      {id: 1, title: 'Annual Sports Day Announcement', message: 'The annual sports day will be held on November 15, 2026. All parents are invited to attend.', audience: 'All Parents', date: 'Oct 10, 2024', icon: 'trophy'},
+      {id: 2, title: 'Science Fair Details', message: 'Science fair registration is now open. Please register by October 30.', audience: 'All Parents', date: 'Oct 8, 2024', icon: 'flask'}
+    ];
+
+    let currentSelectedParent = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadParentsList();
+      document.getElementById('messageForm').addEventListener('submit', sendMessage);
+      document.getElementById('announcementForm').addEventListener('submit', sendAnnouncement);
+    });
+
+    function loadParentsList() {
+      const container = document.getElementById('parentsList');
+      container.innerHTML = '';
+
+      parents.forEach(parent => {
+        const div = document.createElement('div');
+        div.className = 'p-4 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition parent-item';
+        div.onclick = () => selectParent(parent.id, parent);
+
+        const colors = ['bg-orange-100 dark:bg-orange-900/20', 'bg-blue-100 dark:bg-blue-900/20', 'bg-green-100 dark:bg-green-900/20', 'bg-purple-100 dark:bg-purple-900/20'];
+        const iconColors = ['text-orange-600 dark:text-orange-400', 'text-blue-600 dark:text-blue-400', 'text-green-600 dark:text-green-400', 'text-purple-600 dark:text-purple-400'];
+        const colorIndex = parents.indexOf(parent);
+
+        div.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <div class="${colors[colorIndex]} p-3 rounded-full">
+                <i class="fas fa-user ${iconColors[colorIndex]}"></i>
+              </div>
+              <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full ${parent.onlineStatus ? 'bg-emerald-500' : 'bg-slate-300'} border-2 border-white dark:border-slate-700"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-bold text-slate-900 dark:text-white text-sm">${parent.name}</p>
+              <p class="text-xs text-slate-600 dark:text-slate-400 truncate">${parent.student}</p>
+              ${parent.lastMessage ? `<p class="text-xs text-slate-500 dark:text-slate-500 mt-1 truncate">${parent.lastMessage}</p>` : ''}
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function selectParent(parentId, parentData) {
+      currentSelectedParent = parentId;
+      
+      document.querySelectorAll('.parent-item').forEach(item => {
+        item.classList.remove('bg-brand-50', 'dark:bg-brand-900/10');
+      });
+      event.currentTarget.closest('.parent-item').classList.add('bg-brand-50', 'dark:bg-brand-900/10');
+
+      document.getElementById('selectedParentName').textContent = parentData.name;
+      document.getElementById('selectedParentStatus').textContent = parentData.onlineStatus ? '🟢 Online' : '⚫ Offline';
+
+      const messagesContainer = document.getElementById('messagesContainer');
+      messagesContainer.innerHTML = '';
+
+      if (conversations[parentId]) {
+        conversations[parentId].forEach(msg => {
+          const div = document.createElement('div');
+          div.className = `flex ${msg.sender === 'teacher' ? 'justify-end' : 'justify-start'}`;
+
+          const bubble = document.createElement('div');
+          bubble.className = `max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${msg.sender === 'teacher' ? 'bg-brand-600 dark:bg-brand-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white'}`;
+
+          const message = document.createElement('p');
+          message.textContent = msg.message;
+          message.className = 'text-sm';
+
+          const time = document.createElement('p');
+          time.textContent = msg.time;
+          time.className = `text-xs mt-2 ${msg.sender === 'teacher' ? 'text-brand-100' : 'text-slate-500 dark:text-slate-400'}`;
+
+          bubble.appendChild(message);
+          bubble.appendChild(time);
+          div.appendChild(bubble);
+          messagesContainer.appendChild(div);
+        });
+      }
+
+      document.getElementById('messageInputContainer').classList.remove('hidden');
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function sendMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+
+      if (!message || !currentSelectedParent) {
+        if (typeof NotificationManager !== 'undefined') {
+          NotificationManager.warning('Please write a message');
+        }
+        return;
+      }
+
+      const messagesContainer = document.getElementById('messagesContainer');
+      const div = document.createElement('div');
+      div.className = 'flex justify-end';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'max-w-xs lg:max-w-md px-4 py-3 rounded-2xl bg-brand-600 text-white';
+
+      const msg = document.createElement('p');
+      msg.textContent = message;
+      msg.className = 'text-sm';
+
+      const time = document.createElement('p');
+      time.textContent = 'Just now';
+      time.className = 'text-xs mt-2 text-brand-100';
+
+      bubble.appendChild(msg);
+      bubble.appendChild(time);
+      div.appendChild(bubble);
+      messagesContainer.appendChild(div);
+
+      input.value = '';
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      if (typeof NotificationManager !== 'undefined') {
+        NotificationManager.success('Message sent successfully');
+      }
+    }
+
+    function switchTab(tab) {
+      const messagesSection = document.getElementById('messagesSection');
+      const announcementsSection = document.getElementById('announcementsSection');
+      const messagesTab = document.getElementById('messagesTab');
+      const announcementsTab = document.getElementById('announcementsTab');
+
+      if (tab === 'messages') {
+        messagesSection.classList.remove('hidden');
+        announcementsSection.classList.add('hidden');
+        messagesTab.classList.add('text-brand-600', 'border-brand-600');
+        messagesTab.classList.remove('text-slate-500', 'dark:text-slate-400', 'border-transparent');
+        announcementsTab.classList.remove('text-brand-600', 'border-brand-600');
+        announcementsTab.classList.add('text-slate-500', 'dark:text-slate-400', 'border-transparent');
+      } else {
+        messagesSection.classList.add('hidden');
+        announcementsSection.classList.remove('hidden');
+        announcementsTab.classList.add('text-brand-600', 'border-brand-600');
+        announcementsTab.classList.remove('text-slate-500', 'dark:text-slate-400', 'border-transparent');
+        messagesTab.classList.remove('text-brand-600', 'border-brand-600');
+        messagesTab.classList.add('text-slate-500', 'dark:text-slate-400', 'border-transparent');
+        loadAnnouncements();
+      }
+    }
+
+    function loadAnnouncements() {
+      const container = document.getElementById('announcementsList');
+      container.innerHTML = '';
+
+      announcements.forEach(announcement => {
+        const div = document.createElement('div');
+        div.className = 'border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:shadow-md dark:hover:shadow-slate-900 transition-shadow';
+
+        const iconMap = {
+          'trophy': 'fas fa-trophy text-amber-600',
+          'flask': 'fas fa-flask text-blue-600',
+          'calendar': 'fas fa-calendar text-emerald-600'
+        };
+
+        div.innerHTML = `
+          <div class="flex items-start gap-4">
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800">
+              <i class="${iconMap[announcement.icon] || 'fas fa-bell text-slate-600'}"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white">${announcement.title}</h3>
+              <p class="text-sm text-slate-700 dark:text-slate-300 mt-2">${announcement.message}</p>
+              <div class="flex items-center gap-4 mt-4 text-xs text-slate-500 dark:text-slate-400">
+                <span><i class="fas fa-users mr-1"></i>${announcement.audience}</span>
+                <span><i class="fas fa-calendar mr-1"></i>${announcement.date}</span>
+              </div>
+            </div>
+            <button onclick="deleteAnnouncement(${announcement.id})" class="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 transition">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function sendAnnouncement(e) {
+      e.preventDefault();
+
+      const audience = document.getElementById('audienceSelect').value;
+      const title = document.getElementById('announcementTitle').value;
+      const message = document.getElementById('announcementMessage').value;
+
+      if (!audience || !title || !message) {
+        if (typeof NotificationManager !== 'undefined') {
+          NotificationManager.warning('Please fill all required fields');
+        }
+        return;
+      }
+
+      const announcement = {
+        id: announcements.length + 1,
+        title: title,
+        message: message,
+        audience: audience === 'all' ? 'All Parents' : audience,
+        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+        icon: 'bell'
+      };
+
+      announcements.push(announcement);
+      document.getElementById('announcementForm').reset();
+      loadAnnouncements();
+
+      if (typeof NotificationManager !== 'undefined') {
+        NotificationManager.success('Announcement sent to parents');
+      }
+    }
+
+    function deleteAnnouncement(id) {
+      if (confirm('Delete this announcement?')) {
+        announcements = announcements.filter(a => a.id !== id);
+        loadAnnouncements();
+        if (typeof NotificationManager !== 'undefined') {
+          NotificationManager.success('Announcement deleted');
+        }
+      }
+    }
+
+    // Initialize page content with sidebar
+    function initPage() {
+      const mainElement = document.getElementById('communicationMain');
+      const mainContent = document.getElementById('mainContent');
+      
+      if (mainElement && mainContent) {
+        mainContent.innerHTML = mainElement.innerHTML;
+        mainElement.remove();
+      } else {
+        setTimeout(initPage, 100);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPage);
+    } else {
+      initPage();
+    }
+  </script>
+
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/global-search.js"></script>
+  <script src="../js/notification-service.js"></script>
+  <script src="../js/export-service.js"></script>
+
+</body>
+</html>
+

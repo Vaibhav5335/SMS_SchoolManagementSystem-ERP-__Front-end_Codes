@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <title>Attendance Records - Parent Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    *:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-800 antialiased dark:bg-[#0f172a] dark:text-slate-200 transition-colors duration-300 pb-12">
+
+  <div id="appShell"></div>
+
+  <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
+
+    <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <p class="text-[11px] tracking-[0.2em] font-bold text-slate-500 dark:text-slate-400 uppercase">
+            Record Overview
+          </p>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Attendance
+        </h1>
+        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-2 max-w-2xl">
+          Review daily attendance status, holidays, and subject-wise regularity.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-1 shadow-sm">
+        <button class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-brand-600 dark:hover:text-brand-400 transition-colors" aria-label="Previous Month">
+          <i class="fas fa-chevron-left text-xs"></i>
+        </button>
+        <span class="px-4 text-sm font-bold text-slate-900 dark:text-white min-w-[100px] text-center">Current Month</span>
+        <button class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-brand-600 dark:hover:text-brand-400 transition-colors" aria-label="Next Month">
+          <i class="fas fa-chevron-right text-xs"></i>
+        </button>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      
+      <article class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col items-center justify-center relative overflow-hidden">
+        <h3 class="absolute top-6 left-6 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Overall</h3>
+        
+        <div class="relative h-32 w-32 mt-4">
+          <canvas id="attendanceChart"></canvas>
+          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <span class="text-2xl font-black text-slate-900 dark:text-white">88%</span>
+          </div>
+        </div>
+        
+        <p class="mt-4 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-lg">
+          <i class="fas fa-check-circle mr-1"></i> Safe Zone
+        </p>
+      </article>
+
+      <div class="md:col-span-2 grid grid-cols-2 gap-4">
+        
+        <article class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3">
+            <i class="fas fa-user-check"></i>
+          </div>
+          <p class="text-2xl font-black text-slate-900 dark:text-white">170</p>
+          <p class="text-xs font-bold text-slate-500 uppercase">Days Present</p>
+        </article>
+
+        <article class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400 mb-3">
+            <i class="fas fa-user-times"></i>
+          </div>
+          <p class="text-2xl font-black text-slate-900 dark:text-white">10</p>
+          <p class="text-xs font-bold text-slate-500 uppercase">Days Absent</p>
+        </article>
+
+        <article class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-3">
+            <i class="fas fa-calendar-day"></i>
+          </div>
+          <p class="text-2xl font-black text-slate-900 dark:text-white">22</p>
+          <p class="text-xs font-bold text-slate-500 uppercase">Holidays</p>
+        </article>
+
+        <article class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-3">
+            <i class="fas fa-notes-medical"></i>
+          </div>
+          <p class="text-2xl font-black text-slate-900 dark:text-white">06</p>
+          <p class="text-xs font-bold text-slate-500 uppercase">Approved Leaves</p>
+        </article>
+      </div>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+      
+      <section class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white">Daily View (October 2025)</h2>
+          
+          <div class="flex gap-3 text-[10px] font-bold uppercase tracking-wide">
+            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Present</div>
+            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-500"></span> Absent</div>
+            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-500"></span> Holiday</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-7 mb-2 text-center">
+          <div class="text-xs font-bold text-slate-400 py-2">Sun</div>
+          <div class="text-xs font-bold text-slate-400 py-2">Mon</div>
+          <div class="text-xs font-bold text-slate-400 py-2">Tue</div>
+          <div class="text-xs font-bold text-slate-400 py-2">Wed</div>
+          <div class="text-xs font-bold text-slate-400 py-2">Thu</div>
+          <div class="text-xs font-bold text-slate-400 py-2">Fri</div>
+          <div class="text-xs font-bold text-slate-400 py-2">Sat</div>
+        </div>
+
+        <div id="calendarGrid" class="grid grid-cols-7 gap-1 sm:gap-2"></div>
+      </section>
+
+      <aside class="lg:col-span-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-6">Subject Breakdown</h2>
+        
+        <div class="space-y-6">
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-2">
+              <span class="text-slate-700 dark:text-slate-300">English</span>
+              <span class="text-emerald-600 dark:text-emerald-400">90%</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
+              <div class="bg-brand-600 h-2 rounded-full" style="width: 85%"></div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-1">38/45 Classes Attended</p>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-2">
+              <span class="text-slate-700 dark:text-slate-300">Maths</span>
+              <span class="text-emerald-600 dark:text-emerald-400">40%</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
+              <div class="bg-brand-600 h-2 rounded-full" style="width: 92%"></div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-1">18/48 Classes Attended</p>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-2">
+              <span class="text-slate-700 dark:text-slate-300">Physics</span>
+              <span class="text-emerald-600 dark:text-emerald-400">82%</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
+              <div class="bg-emerald-500 h-2 rounded-full" style="width: 82%"></div>
+            </div>
+            <p class="text-[10px] text-red-500 mt-1 font-bold"><i class="fas fa-exclamation-triangle mr-1"></i> Low Attendance</p>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-2">
+              <span class="text-slate-700 dark:text-slate-300">Chemistry</span>
+              <span class="text-emerald-600 dark:text-emerald-400">85%</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
+              <div class="bg-brand-600 h-2 rounded-full" style="width: 85%"></div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-1">35/45 Classes Attended</p>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+           <a href="apply-leave.html" class="flex items-center justify-center w-full gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 py-3 rounded-xl text-sm font-bold transition-colors">
+             <i class="fas fa-plus-circle"></i> Apply for Leave
+           </a>
+        </div>
+      </aside>
+    </div>
+
+    <section class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 text-sm">
+              <i class="fas fa-layer-group"></i>
+            </span>
+            Yearly Attendance Overview
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">Visualizing working days, holidays, and attendance for the 2025-2026 Academic Year.</p>
+        </div>
+
+        <div class="flex flex-wrap gap-4 text-[10px] font-bold uppercase tracking-wide bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl">
+          <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded bg-emerald-500"></span> Present</div>
+          <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded bg-red-500"></span> Absent</div>
+          <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded bg-purple-500 opacity-80"></span> Holiday</div>
+          <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded bg-slate-200 dark:bg-slate-700"></span> Weekend</div>
+        </div>
+      </div>
+
+      <div id="yearlyGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        </div>
+    </section>
+
+  </main>
+
+  <!-- Supabase Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Data & Error Management -->
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/data-service.js"></script>
+  <script src="../js/error-handler.js"></script>
+
+  <script src="sidebar.js"></script>
+  <script src="../js/theme-manager.js"></script>
+
+  <script>
+    // Get current student ID
+    const CURRENT_STUDENT_ID = localStorage.getItem('studentId') || 'mock-student-1';
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      
+      // Load attendance data
+      await loadAttendanceData();
+      
+      // Initialize charts
+      initializeCharts();
+      
+      // Generate yearly overview
+      generateYearlyOverview();
+    });
+
+    async function loadAttendanceData() {
+      try {
+        errorHandler.showInfo('Loading', 'Fetching attendance records...');
+        
+        const result = await dataService.getAttendanceSummary(CURRENT_STUDENT_ID);
+        
+        if (result.success) {
+          const data = result.data;
+          updateAttendanceStats(data);
+          errorHandler.showSuccess('Loaded', 'Attendance data updated');
+        } else {
+          // Use mock data
+          const mockData = dataService.getMockAttendanceData();
+          updateAttendanceStats(mockData);
+          errorHandler.showWarning('Test Data', 'Using sample data. Configure Supabase for real data.');
+        }
+      } catch (error) {
+        errorHandler.showWarning('Attendance', 'Using cached attendance information');
+        console.error('Attendance loading error:', error);
+      }
+    }
+
+    function updateAttendanceStats(data) {
+      const percentageElements = document.querySelectorAll('[data-attendance-perc]');
+      const presentElements = document.querySelectorAll('[data-attendance-present]');
+      
+      percentageElements.forEach(el => {
+        el.textContent = `${data.percentage}%`;
+      });
+
+      if (presentElements) {
+        presentElements.forEach(el => {
+          el.textContent = `${data.present}/${data.total}`;
+        });
+      }
+
+      // Update the chart data if it exists
+      const chartElement = document.getElementById('attendanceChart');
+      if (chartElement && window.attendanceChartInstance) {
+        window.attendanceChartInstance.data.datasets[0].data = [data.present, data.absent];
+        window.attendanceChartInstance.update();
+      }
+    }
+
+    function initializeCharts() {
+      try {
+        const ctx = document.getElementById('attendanceChart');
+        if (!ctx) return;
+
+        const ctx2d = ctx.getContext('2d');
+        const isDark = document.documentElement.classList.contains('dark');
+        const borderColor = isDark ? '#334155' : '#e2e8f0';
+        const textColor = isDark ? '#cbd5e1' : '#475569';
+
+        window.attendanceChartInstance = new Chart(ctx2d, {
+          type: 'doughnut',
+          data: {
+            labels: ['Present', 'Absent'],
+            datasets: [{
+              data: [88, 12],
+              backgroundColor: ['#10b981', '#ef4444'],
+              borderColor: [borderColor, borderColor],
+              borderWidth: 2,
+              hoverOffset: 0
+            }]
+          },
+          options: {
+            cutout: '72%',
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: false }
+            },
+            events: []
+          }
+        });
+      } catch (error) {
+        errorHandler.showError('Chart Error', 'Failed to initialize attendance chart');
+        console.error('Chart initialization error:', error);
+      }
+    }
+
+    function generateYearlyOverview() {
+      try {
+        const yearlyGrid = document.getElementById('yearlyGrid');
+        if (!yearlyGrid) return;
+
+        yearlyGrid.innerHTML = ''; // Clear loading state
+
+        const months = ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May"];
+
+        months.forEach((month, index) => {
+          const monthCard = document.createElement('div');
+          monthCard.className = "border border-slate-100 dark:border-slate-800 rounded-xl p-4 bg-slate-50/50 dark:bg-slate-800/20";
+          
+          const header = document.createElement('div');
+          header.className = "text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3";
+          header.innerText = month;
+          monthCard.appendChild(header);
+
+          const miniGrid = document.createElement('div');
+          miniGrid.className = "grid grid-cols-7 gap-1";
+          
+          const daysInMonth = 30;
+          const monthStartDay = (index * 2) % 7;
+
+          for(let i=0; i<monthStartDay; i++) {
+            miniGrid.appendChild(document.createElement('div'));
+          }
+
+          for(let d=1; d<=daysInMonth; d++) {
+            const dot = document.createElement('div');
+            const dayOfWeek = (monthStartDay + d - 1) % 7;
+            const isWknd = dayOfWeek === 0 || dayOfWeek === 6;
+
+            const rand = Math.random();
+            let bgClass = "bg-emerald-500";
+            let status = "Present";
+
+            if (isWknd) {
+              bgClass = "bg-slate-200 dark:bg-slate-700";
+              status = "Weekend";
+            } else if (rand > 0.95) {
+              bgClass = "bg-purple-500 opacity-80";
+              status = "Holiday";
+            } else if (rand > 0.90) {
+              bgClass = "bg-red-500";
+              status = "Absent";
+            }
+            
+            dot.className = `w-full aspect-square rounded-sm ${bgClass} transition-all hover:shadow-md cursor-pointer`;
+            dot.title = `${month} ${d}: ${status}`;
+            
+            miniGrid.appendChild(dot);
+          }
+
+          monthCard.appendChild(miniGrid);
+          yearlyGrid.appendChild(monthCard);
+        });
+      } catch (error) {
+        errorHandler.showError('Overview Error', 'Failed to generate yearly overview');
+        console.error('Yearly overview error:', error);
+      }
+    }
+  </script>
+
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/global-search.js"></script>
+  <script src="../js/notification-service.js"></script>
+  <script src="../js/export-service.js"></script>
+
+</body>
+</html>

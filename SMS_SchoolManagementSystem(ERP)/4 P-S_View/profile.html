@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Profile - Parent Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(15px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    /* Focus styles */
+    *:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-800 antialiased dark:bg-[#0f172a] dark:text-slate-200 transition-colors duration-300 pb-12">
+
+  <div id="appShell"></div>
+
+  <div id="toast-container" class="fixed top-4 right-4 z-[100] space-y-2 max-w-sm pointer-events-none"></div>
+
+  <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
+
+    <header class="mb-8">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+        <p class="text-[11px] tracking-[0.2em] font-bold text-slate-500 dark:text-slate-400 uppercase">
+          Student Information
+        </p>
+      </div>
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            My Profile
+          </h1>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-2 max-w-2xl">
+            Manage personal details, emergency contacts, and medical information.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <aside class="lg:col-span-1 space-y-6">
+        
+        <div class="bg-gradient-to-br from-brand-600 to-indigo-800 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden group">
+          <div class="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl group-hover:scale-110 transition-transform duration-700"></div>
+          
+          <div class="relative z-10 flex flex-col items-center text-center">
+            <div class="w-24 h-24 rounded-full p-1 bg-white/20 backdrop-blur-sm border border-white/30 mb-4 shadow-inner">
+              <img src="https://ui-avatars.com/api/?name=Rishu+Kumar&background=random&size=200" alt="Profile" class="w-full h-full rounded-full object-cover shadow-sm">
+            </div>
+            
+            <h2 class="text-xl font-bold mb-1">Rishu Kumar</h2>
+            <p class="text-blue-100 text-sm font-medium mb-4">Class 12th • Roll #25</p>
+            
+            <div class="w-full bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10 grid grid-cols-2 gap-2 text-xs">
+              <div class="text-center border-r border-white/10">
+                <span class="block text-blue-200 uppercase tracking-wider font-bold text-[10px]">ID Number</span>
+                <span class="block font-bold mt-0.5">ST-2026-25</span>
+              </div>
+              <div class="text-center">
+                <span class="block text-blue-200 uppercase tracking-wider font-bold text-[10px]">DOB</span>
+                <span class="block font-bold mt-0.5">10 May 2007</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+          <a href="#personal" class="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-900/20 flex items-center justify-center text-brand-600">
+                <i class="fas fa-user"></i>
+              </div>
+              <span class="font-bold text-slate-700 dark:text-slate-200">Personal Info</span>
+            </div>
+            <i class="fas fa-chevron-right text-xs text-slate-400 group-hover:text-brand-500"></i>
+          </a>
+          <a href="#parents" class="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600">
+                <i class="fas fa-users"></i>
+              </div>
+              <span class="font-bold text-slate-700 dark:text-slate-200">Parent Details</span>
+            </div>
+            <i class="fas fa-chevron-right text-xs text-slate-400 group-hover:text-brand-500"></i>
+          </a>
+          <a href="#medical" class="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600">
+                <i class="fas fa-heartbeat"></i>
+              </div>
+              <span class="font-bold text-slate-700 dark:text-slate-200">Medical Info</span>
+            </div>
+            <i class="fas fa-chevron-right text-xs text-slate-400 group-hover:text-brand-500"></i>
+          </a>
+          <a href="#security" class="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400">
+                <i class="fas fa-lock"></i>
+              </div>
+              <span class="font-bold text-slate-700 dark:text-slate-200">Security</span>
+            </div>
+            <i class="fas fa-chevron-right text-xs text-slate-400 group-hover:text-brand-500"></i>
+          </a>
+        </nav>
+      </aside>
+
+      <div class="lg:col-span-2 space-y-8">
+
+        <section id="personal" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm scroll-mt-24">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <i class="fas fa-user-edit text-brand-500 text-lg"></i> Personal Information
+            </h2>
+            <button onclick="toggleEdit('personalForm')" class="text-xs font-bold text-brand-600 hover:underline">Edit Details</button>
+          </div>
+
+          <form id="personalForm" class="space-y-5">
+            <fieldset disabled class="grid grid-cols-1 md:grid-cols-2 gap-5 group-disabled:opacity-100 transition-opacity" id="personalFieldset">
+              
+              <div>
+                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5">First Name</label>
+                <input type="text" value="Rishu" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 font-semibold text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 disabled:opacity-70 disabled:cursor-not-allowed">
+              </div>
+              
+              <div>
+                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Last Name</label>
+                <input type="text" value="Kumar" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 font-semibold text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 disabled:opacity-70 disabled:cursor-not-allowed">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Date of Birth</label>
+                <input type="date" value="2007-05-10" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 font-semibold text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 disabled:opacity-70 disabled:cursor-not-allowed">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Blood Group</label>
+                <select class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 font-semibold text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 disabled:opacity-70 disabled:cursor-not-allowed">
+                  <option selected>O+</option>
+                  <option>A+</option>
+                  <option>B+</option>
+                  <option>AB+</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Residential Address</label>
+                <textarea rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 font-semibold text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 disabled:opacity-70 disabled:cursor-not-allowed resize-none">456, Hill View Colony, Sector 5, New Delhi - 110001</textarea>
+              </div>
+            </fieldset>
+
+            <div class="hidden justify-end pt-2" id="personalActions">
+              <button type="button" onclick="cancelEdit('personalForm')" class="mr-3 px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors">Cancel</button>
+              <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg shadow-brand-500/20 active:scale-95 transition-all">Save Changes</button>
+            </div>
+          </form>
+        </section>
+
+        <section id="parents" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm scroll-mt-24">
+          <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+            <i class="fas fa-user-friends text-purple-500 text-lg"></i> Parent Information
+          </h2>
+
+          <div class="space-y-4">
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center text-brand-700 dark:text-brand-300 font-bold">
+                  RK
+                </div>
+                <div>
+                  <h3 class="font-bold text-slate-900 dark:text-white">Mr. Rajesh Kumar</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">Father / Guardian</p>
+                </div>
+              </div>
+              <div class="flex flex-col sm:items-end text-sm font-medium text-slate-600 dark:text-slate-300 space-y-1">
+                <div class="flex items-center gap-2"><i class="fas fa-phone text-xs text-slate-400"></i> +91 98765 43210</div>
+                <div class="flex items-center gap-2"><i class="fas fa-envelope text-xs text-slate-400"></i> rajesh.k@example.com</div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center text-pink-700 dark:text-pink-300 font-bold">
+                  MK
+                </div>
+                <div>
+                  <h3 class="font-bold text-slate-900 dark:text-white">Mrs. Meera Kumar</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">Mother</p>
+                </div>
+              </div>
+              <div class="flex flex-col sm:items-end text-sm font-medium text-slate-600 dark:text-slate-300 space-y-1">
+                <div class="flex items-center gap-2"><i class="fas fa-phone text-xs text-slate-400"></i> +91 98765 43211</div>
+                <div class="flex items-center gap-2"><i class="fas fa-envelope text-xs text-slate-400"></i> meera.k@example.com</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="medical" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm scroll-mt-24">
+          <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+            <i class="fas fa-heartbeat text-red-500 text-lg"></i> Medical & Emergency
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-500/20 rounded-xl p-4">
+              <h3 class="font-bold text-red-700 dark:text-red-400 text-sm mb-3 uppercase tracking-wide">Known Allergies</h3>
+              <div class="flex flex-wrap gap-2">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-white dark:bg-red-950 text-red-600 dark:text-red-300 border border-red-200 dark:border-red-800">
+                  Peanuts
+                </span>
+                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-white dark:bg-red-950 text-red-600 dark:text-red-300 border border-red-200 dark:border-red-800">
+                  Penicillin
+                </span>
+              </div>
+            </div>
+
+            <div class="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-500/20 rounded-xl p-4">
+               <h3 class="font-bold text-blue-700 dark:text-blue-400 text-sm mb-3 uppercase tracking-wide">Emergency Contact</h3>
+               <p class="font-bold text-slate-900 dark:text-white">Mr. Ashok Sharma (Uncle)</p>
+               <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><i class="fas fa-phone-alt mr-1"></i> +91 99887 76655</p>
+            </div>
+          </div>
+          
+          <div class="mt-4">
+            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Medical Notes / Conditions</label>
+            <p class="text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+              Student has seasonal allergies. Keep antihistamines available during allergy season.
+            </p>
+          </div>
+        </section>
+
+        <section id="security" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm scroll-mt-24">
+          <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+            <i class="fas fa-shield-alt text-slate-500 text-lg"></i> Security
+          </h2>
+
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-bold text-slate-900 dark:text-white">Change Password</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Last changed 3 months ago</p>
+            </div>
+            <button class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+              Update
+            </button>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="../js/theme-manager.js"></script>
+
+  <script>
+    // Simple Form Edit Toggle Logic
+    function toggleEdit(formId) {
+      const form = document.getElementById(formId);
+      const fieldset = document.getElementById('personalFieldset');
+      const actions = document.getElementById('personalActions');
+      const inputs = fieldset.querySelectorAll('input, select, textarea');
+
+      fieldset.disabled = false;
+      actions.classList.remove('hidden');
+      actions.classList.add('flex');
+      
+      // Focus on first input
+      inputs[0].focus();
+    }
+
+    function cancelEdit(formId) {
+      const fieldset = document.getElementById('personalFieldset');
+      const actions = document.getElementById('personalActions');
+
+      fieldset.disabled = true;
+      actions.classList.add('hidden');
+      actions.classList.remove('flex');
+      
+      // Ideally reset form values to initial state here
+      // document.getElementById(formId).reset(); 
+    }
+
+    // Handle Form Submit
+    document.getElementById('personalForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Simulate API call
+      const btn = this.querySelector('button[type="submit"]');
+      const originalText = btn.innerText;
+      btn.innerText = 'Saving...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.disabled = false;
+        cancelEdit('personalForm');
+        
+        // Show Toast
+        showToast('Profile updated successfully!');
+      }, 1000);
+    });
+
+    // Toast Notification System
+    window.showToast = function(message) {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      toast.className = `bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0 backdrop-blur-sm`;
+      toast.innerHTML = `<i class="fas fa-check-circle text-lg"></i><span class="text-sm font-bold tracking-wide">${message}</span>`;
+
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.remove('translate-x-full', 'opacity-0'));
+      setTimeout(() => {
+        toast.classList.add('translate-x-full', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    };
+  </script>
+
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/global-search.js"></script>
+  <script src="../js/notification-service.js"></script>
+  <script src="../js/export-service.js"></script>
+
+</body>
+</html>

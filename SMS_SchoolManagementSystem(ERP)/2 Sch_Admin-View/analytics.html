@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Analytics - School Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          },
+          colors: {
+            brand: { 50: '#dcfce7', 100: '#bbf7d0', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 900: '#14532d' },
+            dark: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+            'slide-in': 'slideIn 0.4s ease-out forwards',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(15px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideIn: {
+              '0%': { opacity: '0', transform: 'translateX(-10px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    *:focus-visible {
+      outline: 2px solid #22c55e;
+      outline-offset: 2px;
+    }
+
+    /* Glassmorphism utilities */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .dark .glass {
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    /* Add left padding to main content area */
+    @media (min-width: 1024px) {
+      #mainContent {
+        padding-left: 1rem !important;
+      }
+    }
+  </style>
+</head>
+
+<body
+  class="min-h-screen bg-slate-50 text-slate-800 antialiased dark:bg-[#020617] dark:text-slate-200 transition-colors duration-300">
+  <div id="appShell"></div>
+
+  <main id="analyticsMain" class="hidden w-full max-w-[1600px] mx-auto py-8 animate-fade-in-up">
+    <br>
+    <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Analytics</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          School Analytics
+        </h1>
+        <p class="text-base text-slate-600 dark:text-slate-400 mt-2">
+          Comprehensive reports on revenue, attendance, and performance metrics
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Dark mode toggle is now in sidebar header -->
+        <button onclick="exportReport()"
+          class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl font-bold transition-all">
+          <i class="fas fa-download"></i>
+          <span>Export</span>
+        </button>
+        <button onclick="refreshData()"
+          class="flex items-center gap-2 bg-gradient-to-r from-brand-500 to-emerald-600 hover:from-brand-600 hover:to-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all active:scale-95">
+          <i class="fas fa-sync-alt"></i>
+          <span>Refresh</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Filter Bar -->
+    <div
+      class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-4 mb-6">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1">
+          <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Time Period</label>
+          <select id="timePeriod"
+            class="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+            <option>Last 30 Days</option>
+            <option>Last 3 Months</option>
+            <option>Last 6 Months</option>
+            <option>This Year</option>
+          </select>
+        </div>
+        <div class="flex-1">
+          <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Class Filter</label>
+          <select id="classFilter"
+            class="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+            <option>All Classes</option>
+            <option>Class 5A</option>
+            <option>Class 5B</option>
+            <option>Class 8A</option>
+            <option>Class 8B</option>
+          </select>
+        </div>
+        <div class="flex-1">
+          <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Metric Type</label>
+          <select id="metricType"
+            class="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+            <option>All Metrics</option>
+            <option>Revenue Only</option>
+            <option>Attendance Only</option>
+            <option>Performance Only</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue Analytics -->
+    <div
+      class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6 mb-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-rupee-sign text-yellow-500"></i>Revenue Analytics
+        </h2>
+        <span class="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-full">Monthly
+          Overview</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div
+          class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/10 dark:to-amber-900/10 rounded-2xl p-5 border border-yellow-100 dark:border-yellow-800/30">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Total
+                Revenue</p>
+              <p class="text-3xl font-extrabold text-slate-900 dark:text-white" id="totalRevenue">₹2,45,000</p>
+              <p class="text-sm font-bold text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1">
+                <i class="fas fa-arrow-up"></i>12% increase
+              </p>
+            </div>
+            <div
+              class="w-12 h-12 rounded-xl bg-yellow-100 dark:bg-yellow-900/20 flex items-center justify-center text-yellow-600 dark:text-yellow-400">
+              <i class="fas fa-coins text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 rounded-2xl p-5 border border-green-100 dark:border-green-800/30">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Paid Fees
+              </p>
+              <p class="text-3xl font-extrabold text-slate-900 dark:text-white" id="paidFees">₹2,20,000</p>
+              <p class="text-sm font-bold text-slate-600 dark:text-slate-400 mt-2">89.8% collection rate</p>
+            </div>
+            <div
+              class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400">
+              <i class="fas fa-check-circle text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/10 dark:to-rose-900/10 rounded-2xl p-5 border border-red-100 dark:border-red-800/30">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Pending
+                Fees</p>
+              <p class="text-3xl font-extrabold text-slate-900 dark:text-white" id="pendingFees">₹25,000</p>
+              <p class="text-sm font-bold text-slate-600 dark:text-slate-400 mt-2">10.2% pending</p>
+            </div>
+            <div
+              class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
+              <i class="fas fa-exclamation-circle text-xl"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="h-80 w-full relative">
+        <canvas id="revenueChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Attendance Analytics -->
+    <div
+      class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6 mb-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-check-circle text-green-500"></i>Attendance Analytics
+        </h2>
+        <span class="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-full">Daily
+          Tracking</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div
+          class="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/10 dark:to-cyan-900/10 rounded-2xl p-5 border border-blue-100 dark:border-blue-800/30">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Average
+                Attendance</p>
+              <p class="text-3xl font-extrabold text-slate-900 dark:text-white" id="avgAttendance">92.5%</p>
+              <p class="text-sm font-bold text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1">
+                <i class="fas fa-arrow-up"></i>2.3% increase
+              </p>
+            </div>
+            <div
+              class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+              <i class="fas fa-chart-line text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 rounded-2xl p-5 border border-green-100 dark:border-green-800/30">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Present
+                Today</p>
+              <p class="text-3xl font-extrabold text-slate-900 dark:text-white" id="presentToday">1,145</p>
+              <p class="text-sm font-bold text-slate-600 dark:text-slate-400 mt-2">Out of 1,245 students</p>
+            </div>
+            <div
+              class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400">
+              <i class="fas fa-user-check text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/10 dark:to-rose-900/10 rounded-2xl p-5 border border-red-100 dark:border-red-800/30">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Absent
+                Today</p>
+              <p class="text-3xl font-extrabold text-slate-900 dark:text-white" id="absentToday">100</p>
+              <p class="text-sm font-bold text-slate-600 dark:text-slate-400 mt-2">8.0% absent rate</p>
+            </div>
+            <div
+              class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
+              <i class="fas fa-user-times text-xl"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="h-80 w-full relative">
+        <canvas id="attendanceChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Class-wise Performance -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-chart-bar text-purple-500"></i>Class-wise Performance
+        </h2>
+        <span
+          class="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-full">Comparative
+          Analysis</span>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+        <table class="w-full">
+          <thead class="bg-slate-50 dark:bg-slate-800/50">
+            <tr>
+              <th
+                class="px-6 py-3 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Class</th>
+              <th
+                class="px-6 py-3 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Students</th>
+              <th
+                class="px-6 py-3 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Avg Attendance</th>
+              <th
+                class="px-6 py-3 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Fee Collection</th>
+              <th
+                class="px-6 py-3 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Avg Marks</th>
+              <th
+                class="px-6 py-3 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+              <td class="px-6 py-4 font-bold text-slate-900 dark:text-white">Class 5A</td>
+              <td class="px-6 py-4 text-slate-600 dark:text-slate-400">45</td>
+              <td class="px-6 py-4">
+                <span
+                  class="bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 px-3 py-1 rounded-full text-xs font-bold">94.2%</span>
+              </td>
+              <td class="px-6 py-4 text-slate-600 dark:text-slate-400">₹2,25,000</td>
+              <td class="px-6 py-4 text-slate-600 dark:text-slate-400">85.5%</td>
+              <td class="px-6 py-4">
+                <button onclick="viewClassDetails('5A')"
+                  class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-bold flex items-center gap-1">
+                  View <i class="fas fa-arrow-right text-xs"></i>
+                </button>
+              </td>
+            </tr>
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+              <td class="px-6 py-4 font-bold text-slate-900 dark:text-white">Class 5B</td>
+              <td class="px-6 py-4 text-slate-600 dark:text-slate-400">42</td>
+              <td class="px-6 py-4">
+                <span
+                  class="bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 px-3 py-1 rounded-full text-xs font-bold">91.8%</span>
+              </td>
+              <td class="px-6 py-4 text-slate-600 dark:text-slate-400">₹2,10,000</td>
+              <td class="px-6 py-4 text-slate-600 dark:text-slate-400">83.2%</td>
+              <td class="px-6 py-4">
+                <button onclick="viewClassDetails('5B')"
+                  class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-bold flex items-center gap-1">
+                  View <i class="fas fa-arrow-right text-xs"></i>
+                </button>
+              </td>
+            </tr>
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+              <td class="px-6 py-4 font-bold text-slate-900 dark:text-white">Class 8A</td>
+              <td class="px-6 py-4 text-slate-600 dark:text-slate-400">38</td>
+              <td class="px-6 py-4">
+                <span
+                  class="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400 px-3 py-1 rounded-full text-xs font-bold">89.5%</span>
+              </td>
+              <td class="px-6 py-4 text-slate-600 dark:text-slate-400">₹1,90,000</td>
+              <td class="px-6 py-4 text-slate-600 dark:text-slate-400">88.1%</td>
+              <td class="px-6 py-4">
+                <button onclick="viewClassDetails('8A')"
+                  class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-bold flex items-center gap-1">
+                  View <i class="fas fa-arrow-right text-xs"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+  <!-- Data & Error Management -->
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/common-features.js"></script>
+  <script src="../js/theme-manager.js"></script>
+  <script src="sidebar.js"></script>
+
+  <script>
+    'use strict';
+
+    // Wait for sidebar to be injected, then move content into mainContent
+    function initAnalytics() {
+      const analyticsMain = document.getElementById('analyticsMain');
+      const mainContent = document.getElementById('mainContent');
+
+      if (analyticsMain && mainContent) {
+        mainContent.innerHTML = analyticsMain.innerHTML;
+        analyticsMain.remove();
+        analyticsMain.classList.remove('hidden');
+
+        // Now run analytics logic
+        runAnalyticsLogic();
+      } else {
+        setTimeout(initAnalytics, 100);
+      }
+    }
+
+    function runAnalyticsLogic() {
+      // Check authentication
+      if (typeof SessionManager !== 'undefined' && !SessionManager.isAuthenticated()) {
+        window.location.href = '../login.html';
+        return;
+      }
+
+      // Initialize filters
+      initializeFilters();
+
+      // Load analytics data
+      loadAnalyticsData();
+
+      // Initialize charts
+      initializeCharts();
+    }
+
+    function initializeFilters() {
+      // Time period filter
+      document.getElementById('timePeriod').addEventListener('change', function () {
+        loadAnalyticsData();
+        NotificationManager.info(`Showing data for: ${this.value}`);
+      });
+
+      // Class filter
+      document.getElementById('classFilter').addEventListener('change', function () {
+        loadAnalyticsData();
+        NotificationManager.info(`Filtering by: ${this.value}`);
+      });
+
+      // Metric type filter
+      document.getElementById('metricType').addEventListener('change', function () {
+        loadAnalyticsData();
+        NotificationManager.info(`Showing: ${this.value}`);
+      });
+    }
+
+    async function loadAnalyticsData() {
+      try {
+        // In a real app, fetch from API based on filters
+        const timePeriod = document.getElementById('timePeriod').value;
+        const classFilter = document.getElementById('classFilter').value;
+
+        // Simulate loading delay
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        // Update with real-time data (mock data for now)
+        updateAnalyticsCards();
+
+        NotificationManager.success('Analytics data refreshed successfully!');
+      } catch (error) {
+        console.error('Analytics data error:', error);
+        NotificationManager.warning('Using sample analytics data.');
+      }
+    }
+
+    function updateAnalyticsCards() {
+      // These would be updated with real data from API
+      document.getElementById('totalRevenue').textContent = '₹2,45,000';
+      document.getElementById('paidFees').textContent = '₹2,20,000';
+      document.getElementById('pendingFees').textContent = '₹25,000';
+      document.getElementById('avgAttendance').textContent = '92.5%';
+      document.getElementById('presentToday').textContent = '1,145';
+      document.getElementById('absentToday').textContent = '100';
+    }
+
+    function initializeCharts() {
+      try {
+        const isDark = document.documentElement.classList.contains('dark');
+        const textColor = isDark ? '#94a3b8' : '#64748b';
+        const gridColor = isDark ? '#334155' : '#e2e8f0';
+
+        // Revenue Chart (Bar)
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueGradient = revenueCtx.createLinearGradient(0, 0, 0, 400);
+        revenueGradient.addColorStop(0, 'rgba(234, 179, 8, 0.2)');
+        revenueGradient.addColorStop(1, 'rgba(234, 179, 8, 0)');
+
+        window.revenueChartInstance = new Chart(revenueCtx, {
+          type: 'bar',
+          data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+              label: 'Revenue (₹)',
+              data: [240000, 235000, 250000, 245000, 260000, 255000, 270000, 265000, 280000, 275000, 290000, 285000],
+              backgroundColor: revenueGradient,
+              borderColor: '#eab308',
+              borderWidth: 2,
+              borderRadius: 8,
+              barPercentage: 0.7
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                titleColor: isDark ? '#f1f5f9' : '#1e293b',
+                bodyColor: isDark ? '#cbd5e1' : '#334155',
+                borderColor: isDark ? '#334155' : '#e2e8f0',
+                borderWidth: 1,
+                callbacks: {
+                  label: function (context) {
+                    return '₹' + context.parsed.y.toLocaleString();
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: textColor }
+              },
+              y: {
+                grid: { color: gridColor },
+                ticks: {
+                  color: textColor,
+                  callback: function (value) {
+                    return '₹' + (value / 1000) + 'K';
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        // Attendance Chart (Line)
+        const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+        const attendanceGradient = attendanceCtx.createLinearGradient(0, 0, 0, 400);
+        attendanceGradient.addColorStop(0, 'rgba(34, 197, 94, 0.2)');
+        attendanceGradient.addColorStop(1, 'rgba(34, 197, 94, 0)');
+
+        window.attendanceChartInstance = new Chart(attendanceCtx, {
+          type: 'line',
+          data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
+            datasets: [{
+              label: 'Attendance %',
+              data: [88, 91, 93, 92, 94, 95, 93, 92],
+              borderColor: '#22c55e',
+              backgroundColor: attendanceGradient,
+              fill: true,
+              tension: 0.4,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              borderWidth: 3
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                titleColor: isDark ? '#f1f5f9' : '#1e293b',
+                bodyColor: isDark ? '#cbd5e1' : '#334155',
+                borderColor: isDark ? '#334155' : '#e2e8f0',
+                borderWidth: 1
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: gridColor },
+                ticks: { color: textColor }
+              },
+              y: {
+                grid: { color: gridColor },
+                ticks: {
+                  color: textColor,
+                  callback: function (value) {
+                    return value + '%';
+                  }
+                },
+                min: 80,
+                max: 100
+              }
+            }
+          }
+        });
+
+      } catch (error) {
+        NotificationManager.showError('Chart Error', 'Failed to initialize charts.');
+        console.error('Chart initialization error:', error);
+      }
+    }
+
+    function exportReport() {
+      NotificationManager.info('Export feature coming soon');
+    }
+
+    function refreshData() {
+      loadAnalyticsData();
+      NotificationManager.info('Refreshing analytics data...');
+    }
+
+    function viewClassDetails(classId) {
+      NotificationManager.info(`Viewing details for Class ${classId}`);
+      // In real app, this would navigate to class-specific analytics page
+    }
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function () {
+      if (window.revenueChartInstance) window.revenueChartInstance.destroy();
+      if (window.attendanceChartInstance) window.attendanceChartInstance.destroy();
+    });
+
+    // Start initialization when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAnalytics);
+    } else {
+      initAnalytics();
+    }
+  </script>
+</body>
+
+</html>

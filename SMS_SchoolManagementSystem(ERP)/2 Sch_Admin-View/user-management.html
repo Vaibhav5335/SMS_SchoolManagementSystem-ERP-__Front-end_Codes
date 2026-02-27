@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>User Management - School Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+                    },
+                    colors: {
+                        brand: { 50: '#dcfce7', 100: '#bbf7d0', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 900: '#14532d' },
+                        dark: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                        'slide-in': 'slideIn 0.4s ease-out forwards',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(15px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideIn: {
+                            '0%': { opacity: '0', transform: 'translateX(-10px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        *:focus-visible {
+            outline: 2px solid #22c55e;
+            outline-offset: 2px;
+        }
+
+        /* Glassmorphism utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        /* Add left padding to main content area */
+        @media (min-width: 1024px) {
+            #mainContent {
+                padding-left: 1rem !important;
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="min-h-screen bg-slate-50 text-slate-800 antialiased dark:bg-[#020617] dark:text-slate-200 transition-colors duration-300">
+    <div id="appShell"></div>
+
+    <main id="userManagementMain" class="hidden w-full max-w-[1600px] mx-auto py-8 animate-fade-in-up">
+        <br>
+        <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">User
+                        Management</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                    Manage Users
+                </h1>
+                <p class="text-base text-slate-600 dark:text-slate-400 mt-2">
+                    Create and manage Teachers, Students, and Parents accounts
+                </p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Dark mode toggle is now in sidebar header -->
+                <button onclick="refreshData()"
+                    class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl font-bold transition-all">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Refresh</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div
+            class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm mb-6 overflow-hidden">
+            <div class="flex border-b border-slate-200 dark:border-slate-800">
+                <button onclick="showTab('teachers', event)"
+                    class="tab-btn flex-1 px-6 py-4 font-bold text-slate-700 dark:text-slate-300 border-b-2 border-brand-500 bg-brand-50 dark:bg-brand-900/10 flex items-center justify-center gap-2">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Teachers</span>
+                    <span class="bg-brand-500 text-white text-xs font-bold px-2 py-0.5 rounded-full"
+                        id="teachersCount">2</span>
+                </button>
+                <button onclick="showTab('students', event)"
+                    class="tab-btn flex-1 px-6 py-4 font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 border-b-2 border-transparent flex items-center justify-center gap-2">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Students</span>
+                    <span
+                        class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold px-2 py-0.5 rounded-full"
+                        id="studentsCount">1</span>
+                </button>
+                <button onclick="showTab('parents', event)"
+                    class="tab-btn flex-1 px-6 py-4 font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 border-b-2 border-transparent flex items-center justify-center gap-2">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Parents</span>
+                    <span
+                        class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold px-2 py-0.5 rounded-full"
+                        id="parentsCount">1</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Teachers Tab -->
+        <div id="teachers" class="tab-content">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+                <div class="flex-1 max-w-md">
+                    <div class="relative">
+                        <i
+                            class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-slate-500"></i>
+                        <input type="text" id="teacherSearch" placeholder="Search teachers..."
+                            class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+                    </div>
+                </div>
+                <button onclick="openAddTeacherModal()"
+                    class="bg-gradient-to-r from-brand-500 to-emerald-600 hover:from-brand-600 hover:to-emerald-700 text-white px-5 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center gap-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Add Teacher</span>
+                </button>
+            </div>
+
+            <!-- Teachers Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="teachersGrid">
+                <!-- Teachers will be loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- Students Tab -->
+        <div id="students" class="tab-content hidden">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+                <div class="flex-1 max-w-md">
+                    <div class="relative">
+                        <i
+                            class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-slate-500"></i>
+                        <input type="text" id="studentSearch" placeholder="Search students..."
+                            class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+                    </div>
+                </div>
+                <button onclick="openAddStudentModal()"
+                    class="bg-gradient-to-r from-brand-500 to-emerald-600 hover:from-brand-600 hover:to-emerald-700 text-white px-5 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center gap-2">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Admit Student</span>
+                </button>
+            </div>
+
+            <!-- Students Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="studentsGrid">
+                <!-- Students will be loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- Parents Tab -->
+        <div id="parents" class="tab-content hidden">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+                <div class="flex-1 max-w-md">
+                    <div class="relative">
+                        <i
+                            class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-slate-500"></i>
+                        <input type="text" id="parentSearch" placeholder="Search parents..."
+                            class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parents Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="parentsGrid">
+                <!-- Parents will be loaded dynamically -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Teacher Modal -->
+    <div id="addTeacherModal"
+        class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in-up">
+        <div
+            class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto border border-slate-200 dark:border-slate-800 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Add New Teacher</h3>
+                <button onclick="closeAddTeacherModal()"
+                    class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addTeacherForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
+                    <input type="text" name="name" required
+                        class="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email</label>
+                    <input type="email" name="email" required
+                        class="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Phone</label>
+                    <input type="tel" name="phone" required
+                        class="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Assign
+                        Classes</label>
+                    <select name="classes" multiple
+                        class="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-all">
+                        <option>Class 5A</option>
+                        <option>Class 5B</option>
+                        <option>Class 8A</option>
+                        <option>Class 8B</option>
+                    </select>
+                </div>
+                <div class="flex space-x-3 pt-4">
+                    <button type="button" onclick="closeAddTeacherModal()"
+                        class="flex-1 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 py-3 rounded-xl font-bold transition-all">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="flex-1 bg-gradient-to-r from-brand-500 to-emerald-600 hover:from-brand-600 hover:to-emerald-700 text-white py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all active:scale-95">
+                        Create Teacher
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+    <!-- Data & Error Management -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth-guard.js"></script>
+    <script src="../js/common-features.js"></script>
+    <script src="../js/theme-manager.js"></script>
+    <script src="sidebar.js"></script>
+
+    <script>
+        'use strict';
+
+        // Current user data
+        const CURRENT_USER = localStorage.getItem('adminId') || 'mock-admin-1';
+
+        // Wait for sidebar to be injected, then move content into mainContent
+        function initUserManagement() {
+            const userManagementMain = document.getElementById('userManagementMain');
+            const mainContent = document.getElementById('mainContent');
+
+            if (userManagementMain && mainContent) {
+                mainContent.innerHTML = userManagementMain.innerHTML;
+                userManagementMain.remove();
+                userManagementMain.classList.remove('hidden');
+
+                // Now run user management logic
+                runUserManagementLogic();
+            } else {
+                setTimeout(initUserManagement, 100);
+            }
+        }
+
+        function runUserManagementLogic() {
+            // Check authentication
+            if (typeof SessionManager !== 'undefined' && !SessionManager.isAuthenticated()) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Load initial data
+            loadUserData();
+
+            // Initialize search functionality
+            initializeSearch();
+        }
+
+        async function loadUserData() {
+            try {
+                // Load real-time data from multiple sources
+                const [teachersResult, studentsResult, parentsResult] = await Promise.all([
+                    dataService.getTeachers(),
+                    dataService.getStudents(),
+                    dataService.getParents()
+                ]);
+
+                // Update counts
+                if (teachersResult.success) {
+                    document.getElementById('teachersCount').textContent = teachersResult.data.length;
+                    renderTeachers(teachersResult.data);
+                }
+
+                if (studentsResult.success) {
+                    document.getElementById('studentsCount').textContent = studentsResult.data.length;
+                    renderStudents(studentsResult.data);
+                }
+
+                if (parentsResult.success) {
+                    document.getElementById('parentsCount').textContent = parentsResult.data.length;
+                    renderParents(parentsResult.data);
+                }
+
+                NotificationManager.success('User data loaded successfully!');
+            } catch (error) {
+                console.error('User data error:', error);
+                NotificationManager.warning('Using test data. Configure Supabase for real data.');
+                // Load mock data
+                loadMockData();
+            }
+        }
+
+        function loadMockData() {
+            const mockTeachers = [
+                {
+                    id: 'T001',
+                    name: 'Mrs. Priya Singh',
+                    email: 'priya.singh@school.com',
+                    phone: '+91 9876543210',
+                    classes: ['Class 8B'],
+                    avatar: 'https://ui-avatars.com/api/?name=Priya+Singh&background=random'
+                },
+                {
+                    id: 'T002',
+                    name: 'Mr. Rajesh Kumar',
+                    email: 'rajesh.kumar@school.com',
+                    phone: '+91 9876543211',
+                    classes: ['Class 5A', 'Class 5B'],
+                    avatar: 'https://ui-avatars.com/api/?name=Rajesh+Kumar&background=random'
+                }
+            ];
+
+            const mockStudents = [
+                {
+                    id: 'S001',
+                    name: 'Rahul Sharma',
+                    class: 'Class 5A',
+                    rollNo: '15',
+                    parent: 'Mr. Ramesh Sharma',
+                    avatar: 'https://ui-avatars.com/api/?name=Rahul+Sharma&background=random'
+                }
+            ];
+
+            const mockParents = [
+                {
+                    id: 'P001',
+                    name: 'Mr. Ramesh Sharma',
+                    phone: '+91 9876543212',
+                    children: [{ name: 'Rahul Sharma', class: '5A' }],
+                    avatar: 'https://ui-avatars.com/api/?name=Ramesh+Sharma&background=random'
+                }
+            ];
+
+            document.getElementById('teachersCount').textContent = mockTeachers.length;
+            document.getElementById('studentsCount').textContent = mockStudents.length;
+            document.getElementById('parentsCount').textContent = mockParents.length;
+
+            renderTeachers(mockTeachers);
+            renderStudents(mockStudents);
+            renderParents(mockParents);
+        }
+
+        function renderTeachers(teachers) {
+            const container = document.getElementById('teachersGrid');
+            container.innerHTML = teachers.map(teacher => `
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="${teacher.avatar}" alt="${teacher.name}" class="w-12 h-12 rounded-xl object-cover">
+                        <div>
+                            <h3 class="font-bold text-slate-900 dark:text-white">${teacher.name}</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">ID: ${teacher.id}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 mb-4">
+                        <p class="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-2">
+                            <i class="fas fa-envelope text-slate-400"></i>${teacher.email}
+                        </p>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-2">
+                            <i class="fas fa-phone text-slate-400"></i>${teacher.phone}
+                        </p>
+                        <div class="flex flex-wrap gap-1 mt-2">
+                            ${teacher.classes.map(cls => `
+                                <span class="bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400 px-2 py-1 rounded-lg text-xs font-bold">
+                                    ${cls}
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="flex gap-2 pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <button onclick="editTeacher('${teacher.id}')" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-1">
+                            <i class="fas fa-edit"></i>
+                            <span>Edit</span>
+                        </button>
+                        <button onclick="deleteTeacher('${teacher.id}')" class="flex-1 bg-red-100 dark:bg-red-900/20 hover:bg-red-200 dark:hover:bg-red-800/30 text-red-700 dark:text-red-400 py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-1">
+                            <i class="fas fa-trash"></i>
+                            <span>Delete</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderStudents(students) {
+            const container = document.getElementById('studentsGrid');
+            container.innerHTML = students.map(student => `
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="${student.avatar}" alt="${student.name}" class="w-12 h-12 rounded-xl object-cover">
+                        <div>
+                            <h3 class="font-bold text-slate-900 dark:text-white">${student.name}</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">ID: ${student.id}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 mb-4">
+                        <p class="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-2">
+                            <i class="fas fa-graduation-cap text-slate-400"></i>
+                            <span class="font-bold">${student.class}</span>
+                        </p>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-2">
+                            <i class="fas fa-hashtag text-slate-400"></i>Roll No: ${student.rollNo}
+                        </p>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-2">
+                            <i class="fas fa-user-friends text-slate-400"></i>Parent: ${student.parent}
+                        </p>
+                    </div>
+                    <div class="flex gap-2 pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <button onclick="editStudent('${student.id}')" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-1">
+                            <i class="fas fa-edit"></i>
+                            <span>Edit</span>
+                        </button>
+                        <button onclick="promoteStudent('${student.id}')" class="flex-1 bg-blue-100 dark:bg-blue-900/20 hover:bg-blue-200 dark:hover:bg-blue-800/30 text-blue-700 dark:text-blue-400 py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-1">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Promote</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderParents(parents) {
+            const container = document.getElementById('parentsGrid');
+            container.innerHTML = parents.map(parent => `
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="${parent.avatar}" alt="${parent.name}" class="w-12 h-12 rounded-xl object-cover">
+                        <div>
+                            <h3 class="font-bold text-slate-900 dark:text-white">${parent.name}</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">ID: ${parent.id}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 mb-4">
+                        <p class="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-2">
+                            <i class="fas fa-phone text-slate-400"></i>${parent.phone}
+                        </p>
+                        <div class="mt-2">
+                            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Children</p>
+                            ${parent.children.map(child => `
+                                <span class="bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400 px-2 py-1 rounded-lg text-xs font-bold mr-1">
+                                    ${child.name} (${child.class})
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <button onclick="viewParent('${parent.id}')" class="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-1">
+                            <i class="fas fa-eye"></i>
+                            <span>View Details</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function initializeSearch() {
+            // Teacher search
+            document.getElementById('teacherSearch').addEventListener('input', function (e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const teacherCards = document.querySelectorAll('#teachersGrid > div');
+                teacherCards.forEach(card => {
+                    const name = card.querySelector('h3').textContent.toLowerCase();
+                    card.style.display = name.includes(searchTerm) ? 'block' : 'none';
+                });
+            });
+
+            // Student search
+            document.getElementById('studentSearch').addEventListener('input', function (e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const studentCards = document.querySelectorAll('#studentsGrid > div');
+                studentCards.forEach(card => {
+                    const name = card.querySelector('h3').textContent.toLowerCase();
+                    card.style.display = name.includes(searchTerm) ? 'block' : 'none';
+                });
+            });
+
+            // Parent search
+            document.getElementById('parentSearch').addEventListener('input', function (e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const parentCards = document.querySelectorAll('#parentsGrid > div');
+                parentCards.forEach(card => {
+                    const name = card.querySelector('h3').textContent.toLowerCase();
+                    card.style.display = name.includes(searchTerm) ? 'block' : 'none';
+                });
+            });
+        }
+
+        function showTab(tabName, event) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.remove('hidden');
+
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/10');
+                btn.classList.add('border-transparent', 'hover:bg-slate-50', 'dark:hover:bg-slate-800/50');
+            });
+            const targetBtn = event ? event.target.closest('.tab-btn') : document.querySelector(`[onclick*="${tabName}"]`);
+            if (targetBtn) {
+                targetBtn.classList.add('border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/10');
+                targetBtn.classList.remove('border-transparent', 'hover:bg-slate-50', 'dark:hover:bg-slate-800/50');
+            }
+        }
+
+        function refreshData() {
+            loadUserData();
+            NotificationManager.info('Refreshing user data...');
+        }
+
+        // Modal functions
+        function openAddTeacherModal() {
+            document.getElementById('addTeacherModal').classList.remove('hidden');
+        }
+
+        function closeAddTeacherModal() {
+            document.getElementById('addTeacherModal').classList.add('hidden');
+        }
+
+        function openAddStudentModal() {
+            NotificationManager.info('Add Student feature coming soon');
+        }
+
+        function editTeacher(id) {
+            NotificationManager.info('Edit teacher: ' + id);
+        }
+
+        function deleteTeacher(id) {
+            if (confirm('Are you sure you want to delete this teacher?')) {
+                NotificationManager.success('Teacher deleted: ' + id);
+            }
+        }
+
+        function editStudent(id) {
+            NotificationManager.info('Edit student: ' + id);
+        }
+
+        function promoteStudent(id) {
+            if (confirm('Promote this student to next class?')) {
+                NotificationManager.success('Student promoted: ' + id);
+            }
+        }
+
+        function viewParent(id) {
+            NotificationManager.info('View parent: ' + id);
+        }
+
+        // Form submission
+        document.getElementById('addTeacherForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            try {
+                const formData = new FormData(this);
+                const name = formData.get('name') || this.querySelector('[name="name"]').value;
+                const email = formData.get('email') || this.querySelector('[name="email"]').value;
+
+                if (!name || !email) {
+                    NotificationManager.warning('Please fill all required fields');
+                    return;
+                }
+
+                NotificationManager.success('Teacher created successfully!');
+                closeAddTeacherModal();
+                this.reset();
+                loadUserData(); // Refresh data
+            } catch (error) {
+                console.error('Error creating teacher:', error);
+                NotificationManager.error('Failed to create teacher. Please try again.');
+            }
+        });
+
+        // Start initialization when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initUserManagement);
+        } else {
+            initUserManagement();
+        }
+
+        // Initialize with first tab
+        showTab('teachers');
+    </script>
+</body>
+
+</html>

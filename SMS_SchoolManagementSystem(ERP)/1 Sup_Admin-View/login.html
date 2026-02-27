@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Login - School Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <div class="bg-white rounded-2xl shadow-xl p-8 md:p-10">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-full mb-4">
+                    <i class="fas fa-crown text-white text-2xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Super Admin</h1>
+                <p class="text-gray-600">Platform Owner Access</p>
+            </div>
+
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-envelope mr-2 text-indigo-600"></i>Email Address
+                    </label>
+                    <input type="email" id="email" name="email" required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                        placeholder="admin@platform.com">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-lock mr-2 text-indigo-600"></i>Password
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition pr-12"
+                            placeholder="Enter your password">
+                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                    </label>
+                    <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition shadow-lg hover:shadow-xl">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <a href="../index.html" class="text-sm text-gray-600 hover:text-indigo-600">
+                    <i class="fas fa-arrow-left mr-1"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/utils.js"></script>
+    <script>
+        'use strict';
+
+        function togglePassword() {
+            const password = document.getElementById('password');
+            const icon = document.getElementById('toggleIcon');
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                password.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                if (typeof NotificationManager !== 'undefined') {
+                    NotificationManager.warning('Please enter both email and password');
+                } else {
+                    alert('Please enter both email and password');
+                }
+                return;
+            }
+
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
+
+            try {
+                const credentials = { email: email, password: password };
+                let response;
+                
+                if (typeof ApiService !== 'undefined') {
+                    response = await ApiService.login('super-admin', credentials);
+                } else {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    const validCredentials = { email: 'admin@platform.com', password: 'admin123' };
+                    
+                    const isValid = credentials.email && 
+                                   credentials.email.toLowerCase().trim() === validCredentials.email.toLowerCase() && 
+                                   credentials.password === validCredentials.password;
+                    
+                    if (!isValid) {
+                        throw new Error('Invalid credentials');
+                    }
+                    
+                    response = {
+                        success: true,
+                        user: {
+                            id: 'SA001',
+                            name: 'Super Admin',
+                            email: credentials.email
+                        },
+                        token: 'mock_jwt_token_' + Date.now()
+                    };
+                }
+
+                if (!response || !response.success || !response.user) {
+                    throw new Error('Login failed. Please try again.');
+                }
+
+                if (typeof SessionManager !== 'undefined') {
+                    SessionManager.setSession('super-admin', response.user);
+                } else {
+                    const session = {
+                        role: 'super-admin',
+                        userData: response.user,
+                        loginTime: new Date().toISOString(),
+                        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+                    };
+                    localStorage.setItem('userSession', JSON.stringify(session));
+                    localStorage.setItem('isAuthenticated', 'true');
+                }
+
+                if (typeof NotificationManager !== 'undefined') {
+                    NotificationManager.success('Login successful! Redirecting...');
+                } else {
+                    alert('Login successful! Redirecting...');
+                }
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 500);
+
+            } catch (error) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
+                const errorMessage = error.message || 'Invalid credentials. Please try again.';
+                if (typeof NotificationManager !== 'undefined') {
+                    NotificationManager.error(errorMessage);
+                } else {
+                    alert(errorMessage);
+                }
+                document.getElementById('password').value = '';
+            }
+        });
+    </script>
+</body>
+</html>
+

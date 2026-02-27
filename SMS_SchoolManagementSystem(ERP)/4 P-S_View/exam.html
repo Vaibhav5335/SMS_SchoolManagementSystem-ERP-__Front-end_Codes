@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <title>Exam Schedule - Parent Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    /* Custom Scrollbar Hiding */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Accordion Transition Logic */
+    .syllabus-grid {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.4s ease-out;
+    }
+    .syllabus-grid.open {
+      grid-template-rows: 1fr;
+    }
+    .syllabus-inner {
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-800 antialiased dark:bg-[#0f172a] dark:text-slate-200 transition-colors duration-300">
+
+  <div id="appShell"></div>
+
+  <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
+
+    <header class="mb-8 animate-fade-in-up">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-[11px] tracking-[0.2em] font-bold text-slate-500 dark:text-slate-400 uppercase mb-2">Academics</p>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">Exam Schedule</h1>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-2 max-w-2xl">
+            Final Year Exams 2026 • Comprehensive exam plan including syllabus breakdowns.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <section class="relative bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 sm:p-10 text-white shadow-xl mb-10 overflow-hidden animate-fade-in-up" style="animation-delay: 0.1s">
+      
+      <div class="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+      <div class="absolute bottom-0 left-0 -mb-16 -ml-16 w-48 h-48 bg-blue-400 opacity-20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+      <div class="relative z-10">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="inline-block w-2 h-2 bg-red-400 rounded-full animate-pulse"></span>
+          <p class="text-blue-100 text-xs font-bold uppercase tracking-widest">Upcoming Exam</p>
+        </div>
+
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
+          <div>
+            <h2 class="text-2xl sm:text-4xl font-black mb-2 leading-tight">Mathematics</h2>
+            <div class="flex flex-wrap items-center gap-4 text-blue-100 text-sm font-medium">
+              <span class="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full border border-white/10">
+                <i class="far fa-calendar" aria-hidden="true"></i>
+                Tuesday, 15 Mar 2026
+              </span>
+              <span class="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full border border-white/10">
+                <i class="far fa-clock" aria-hidden="true"></i>
+                09:00 AM
+              </span>
+            </div>
+          </div>
+
+          <div class="w-full lg:w-auto bg-white/10 backdrop-blur-md border border-white/20 px-6 py-4 rounded-2xl text-center flex lg:block items-center justify-between lg:justify-center gap-4 shadow-lg">
+            <div class="text-left lg:text-center">
+              <span class="block text-3xl sm:text-4xl font-black leading-none">42</span>
+              <span class="text-[10px] sm:text-xs uppercase opacity-80 tracking-widest font-bold">Days to Go</span>
+            </div>
+            <div class="h-8 w-px bg-white/20 lg:hidden"></div>
+            <div class="lg:hidden text-right">
+              <span class="block text-sm font-bold opacity-90">Prepare Now</span>
+              <a href="#" class="text-xs underline decoration-blue-300 underline-offset-2">View Materials</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Exam List" class="space-y-5" id="exam-list">
+      </section>
+
+    <aside class="mt-8 bg-orange-50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-500/20 rounded-xl p-4 flex gap-4 text-sm text-orange-900 dark:text-orange-200 animate-fade-in-up" style="animation-delay: 0.3s">
+      <i class="fas fa-info-circle mt-0.5 text-orange-600 dark:text-orange-400 shrink-0 text-lg"></i>
+      <div>
+        <span class="font-bold block mb-1">Important Note:</span>
+        <p class="opacity-90 leading-relaxed">Hall tickets must be signed and fee dues must be cleared before the commencement of the first exam. Please contact administration for discrepancies.</p>
+      </div>
+    </aside>
+
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="../js/theme-manager.js"></script>
+
+  <script>
+    // Data Source
+    const exams = [
+      {
+        id: 1,
+        subject: "Mathematics",
+        code: "MA-121",
+        dateRaw: "2026-03-15", // Added for sorting capability if needed
+        dateDisplay: "15",
+        monthDisplay: "Mar",
+        day: "Tuesday",
+        time: "09:00 AM - 12:00 PM",
+        status: "Upcoming",
+        icon: "fa-calculator",
+        colorClass: "text-orange-600 dark:text-orange-500",
+        syllabus: [
+          "Unit 1: Relations and Functions",
+          "Unit 2: Algebra (Matrices and Determinants)",
+          "Unit 3: Calculus (Continuity, Differentiation, Integration)",
+          "Unit 4: Vectors and 3D Geometry",
+          "Unit 5: Linear Programming"
+        ]
+      },
+      {
+        id: 2,
+        subject: "Physics",
+        code: "PH-122",
+        dateRaw: "2026-03-18",
+        dateDisplay: "18",
+        monthDisplay: "Mar",
+        day: "Friday",
+        time: "09:00 AM - 12:00 PM",
+        status: "Upcoming",
+        icon: "fa-atom",
+        colorClass: "text-blue-600 dark:text-blue-500",
+        syllabus: [
+          "Unit 1: Electrostatics",
+          "Unit 2: Current Electricity",
+          "Unit 3: Magnetic Effects of Current and Magnetism",
+          "Unit 4: Electromagnetic Induction and Alternating Currents",
+          "Unit 5: Electromagnetic Waves"
+        ]
+      },
+      {
+        id: 3,
+        subject: "Chemistry",
+        code: "CH-123",
+        dateRaw: "2026-03-22",
+        dateDisplay: "22",
+        monthDisplay: "Mar",
+        day: "Tuesday",
+        time: "09:00 AM - 12:00 PM",
+        status: "Upcoming",
+        icon: "fa-flask",
+        colorClass: "text-purple-600 dark:text-purple-500",
+        syllabus: [
+          "Unit 1: Solid State and Solutions",
+          "Unit 2: Electrochemistry",
+          "Unit 3: Chemical Kinetics",
+          "Unit 4: Surface Chemistry",
+          "Unit 5: Coordination Compounds"
+        ]
+      },
+      {
+        id: 4,
+        subject: "English",
+        code: "EN-124",
+        dateRaw: "2026-03-25",
+        dateDisplay: "25",
+        monthDisplay: "Mar",
+        day: "Friday",
+        time: "09:00 AM - 12:00 PM",
+        status: "Upcoming",
+        icon: "fa-book",
+        colorClass: "text-emerald-600 dark:text-emerald-500",
+        syllabus: [
+          "Unit 1: Reading Comprehension",
+          "Unit 2: Writing Skills",
+          "Unit 3: Literature (Prose, Poetry, Drama)",
+          "Unit 4: Grammar and Usage",
+          "Unit 5: Applied Grammar"
+        ]
+      }
+    ];
+
+    // Main Render Function
+    function renderExams() {
+      const container = document.getElementById('exam-list');
+      
+      // Build HTML string first for performance
+      const htmlContent = exams.map((exam, index) => {
+        const isCompleted = exam.status === "Completed";
+        
+        // Dynamic Styles based on Status
+        const statusBadge = isCompleted
+          ? `<span class="inline-flex items-center bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 uppercase tracking-wide"><i class="fas fa-check mr-1.5 text-[10px]"></i>Done</span>`
+          : `<span class="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 text-[10px] font-bold px-2.5 py-1 rounded-full border border-blue-100 dark:border-blue-800 uppercase tracking-wide">Upcoming</span>`;
+
+        const cardOpacity = isCompleted ? "opacity-75 grayscale-[0.5]" : "opacity-100";
+        
+        const dateBoxColor = isCompleted
+          ? "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700"
+          : "bg-blue-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400 border-brand-100 dark:border-brand-800/50";
+
+        // Generate Syllabus Items
+        const syllabusList = exam.syllabus.map(topic =>
+          `<li class="flex items-start text-sm text-slate-600 dark:text-slate-300 py-1.5">
+             <i class="fas fa-angle-right mt-1 mr-3 text-slate-400 text-xs shrink-0" aria-hidden="true"></i>
+             <span class="leading-snug">${topic}</span>
+           </li>`
+        ).join('');
+
+        return `
+          <article class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden ${cardOpacity} transition-all duration-300 hover:shadow-md animate-fade-in-up" style="animation-delay: ${index * 100}ms">
+            
+            <div class="p-5 flex flex-col md:flex-row gap-5 items-start md:items-center">
+              
+              <div class="${dateBoxColor} rounded-xl p-3 text-center min-w-[5rem] shrink-0 border flex flex-col items-center justify-center aspect-square md:aspect-auto">
+                <span class="block text-[10px] font-bold uppercase tracking-wider mb-0.5">${exam.day.substring(0,3)}</span>
+                <span class="block text-2xl font-black leading-none">${exam.dateDisplay}</span>
+                <span class="block text-xs font-bold mt-0.5">${exam.monthDisplay}</span>
+              </div>
+
+              <div class="flex-1 w-full">
+                <div class="flex flex-wrap justify-between items-start gap-3 mb-2">
+                  <div>
+                    <h3 class="font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2.5">
+                      <i class="fas ${exam.icon} ${exam.colorClass} text-base" aria-hidden="true"></i>
+                      ${exam.subject}
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mt-1 ml-0.5">
+                      Code: <span class="font-mono text-slate-600 dark:text-slate-300">${exam.code}</span>
+                    </p>
+                  </div>
+                  ${statusBadge}
+                </div>
+
+                <div class="flex flex-wrap items-center gap-y-2 gap-x-4 text-xs text-slate-500 dark:text-slate-400 font-semibold mt-1">
+                  <span class="flex items-center"><i class="far fa-clock mr-1.5 text-slate-400"></i> ${exam.time}</span>
+                  <span class="hidden sm:inline text-slate-300 dark:text-slate-700">|</span>
+                  <span class="flex items-center"><i class="fas fa-map-marker-alt mr-1.5 text-slate-400"></i> Main Examination Hall</span>
+                </div>
+              </div>
+
+              <button 
+                onclick="toggleSyllabus(${exam.id})"
+                aria-expanded="false"
+                aria-controls="syllabus-${exam.id}"
+                class="w-full md:w-auto self-stretch md:self-center px-5 py-2.5 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 flex items-center justify-center justify-between md:justify-center gap-3 group"
+              >
+                <span>View Syllabus</span>
+                <i id="icon-${exam.id}" class="fas fa-chevron-down text-xs transition-transform duration-300 group-hover:text-brand-600 dark:group-hover:text-brand-400"></i>
+              </button>
+            </div>
+
+            <div id="syllabus-${exam.id}" class="syllabus-grid border-t border-slate-100 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-950/30">
+              <div class="syllabus-inner">
+                <div class="p-5 pl-5 md:pl-[6.5rem]">
+                  <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
+                    Topics Covered
+                  </h4>
+                  <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
+                    ${syllabusList}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </article>
+        `;
+      }).join('');
+
+      container.innerHTML = htmlContent;
+    }
+
+    // Accordion Logic
+    function toggleSyllabus(id) {
+      const content = document.getElementById(`syllabus-${id}`);
+      const icon = document.getElementById(`icon-${id}`);
+      const button = document.querySelector(`button[onclick="toggleSyllabus(${id})"]`);
+      
+      const isOpen = content.classList.contains('open');
+
+      // Close all others (Accordion behavior) - Optional, can be removed if multiple open allowed
+      document.querySelectorAll('.syllabus-grid.open').forEach(el => {
+        if(el.id !== `syllabus-${id}`) {
+            el.classList.remove('open');
+            // Reset icons/aria for others
+            const otherId = el.id.split('-')[1];
+            document.getElementById(`icon-${otherId}`).classList.remove('rotate-180');
+            document.querySelector(`button[onclick="toggleSyllabus(${otherId})"]`).setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      if (isOpen) {
+        content.classList.remove('open');
+        icon.classList.remove('rotate-180');
+        button.setAttribute('aria-expanded', 'false');
+      } else {
+        content.classList.add('open');
+        icon.classList.add('rotate-180');
+        button.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    // Initialize
+    document.addEventListener("DOMContentLoaded", renderExams);
+  </script>
+
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/global-search.js"></script>
+  <script src="../js/notification-service.js"></script>
+  <script src="../js/export-service.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <title>Academics - Parent Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    *:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
+    
+    /* Smooth tab transition */
+    .tab-content { transition: opacity 0.3s ease-in-out; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-800 antialiased dark:bg-[#0f172a] dark:text-slate-200 transition-colors duration-300 pb-12">
+
+  <div id="appShell"></div>
+
+  <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
+
+    <header class="mb-8">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+          <p class="text-[11px] tracking-[0.2em] font-bold text-slate-500 dark:text-slate-400 uppercase">
+            Student Progress
+          </p>
+        </div>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        Academics
+      </h1>
+      <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-2 max-w-2xl leading-relaxed">
+        Track homework assignments, view examination results, and analyze performance trends.
+      </p>
+    </header>
+
+    <nav class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm mb-8 overflow-hidden">
+      <div class="flex border-b border-slate-100 dark:border-slate-800 overflow-x-auto no-scrollbar" role="tablist">
+        
+        <button onclick="showTab('homework', event)" class="tab-btn flex-1 min-w-[140px] px-6 py-4 text-sm font-bold text-brand-600 dark:text-brand-400 border-b-2 border-brand-600 bg-brand-50/50 dark:bg-brand-900/10 whitespace-nowrap transition-colors focus:outline-none" role="tab" aria-selected="true">
+          <i class="fas fa-book mr-2"></i> Homework
+        </button>
+
+        <button onclick="showTab('results', event)" class="tab-btn flex-1 min-w-[140px] px-6 py-4 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 whitespace-nowrap border-b-2 border-transparent transition-colors focus:outline-none" role="tab" aria-selected="false">
+          <i class="fas fa-file-signature mr-2"></i> Exam Results
+        </button>
+
+        <button onclick="showTab('performance', event)" class="tab-btn flex-1 min-w-[140px] px-6 py-4 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 whitespace-nowrap border-b-2 border-transparent transition-colors focus:outline-none" role="tab" aria-selected="false">
+          <i class="fas fa-chart-line mr-2"></i> Analytics
+        </button>
+
+      </div>
+    </nav>
+
+    <section id="homework" class="tab-content outline-none">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <article class="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:shadow-lg hover:border-brand-300 dark:hover:border-brand-700 transition-all duration-300">
+          <div class="flex flex-col h-full justify-between gap-5">
+            <div>
+              <div class="flex flex-wrap items-center gap-2 mb-4">
+                <span class="bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border border-indigo-100 dark:border-indigo-800">Mathematics</span>
+                <span class="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border border-red-100 dark:border-red-800">
+                  <i class="far fa-clock mr-1"></i> Due Tomorrow
+                </span>
+              </div>
+
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">Algebra: Quadratic Equations</h3>
+              <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
+                Complete exercises 5.1 to 5.3. Show all working steps clearly in your graph notebook.
+              </p>
+
+              <div class="flex items-center text-xs font-bold text-slate-500 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800 pt-4">
+                <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center mr-2 text-[10px] text-slate-600 dark:text-slate-300">PS</div>
+                <span>Mrs. Priya Singh</span>
+              </div>
+            </div>
+
+            <button class="w-full sm:w-auto bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl text-sm font-bold shadow-lg shadow-brand-500/20 active:scale-95 transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-download"></i> Download Worksheet
+            </button>
+          </div>
+        </article>
+
+        <article class="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:shadow-lg hover:border-brand-300 dark:hover:border-brand-700 transition-all duration-300">
+          <div class="flex flex-col h-full justify-between gap-5">
+            <div>
+              <div class="flex flex-wrap items-center gap-2 mb-4">
+                <span class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border border-emerald-100 dark:border-emerald-800">Science</span>
+                <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border border-slate-200 dark:border-slate-700">
+                  <i class="far fa-clock mr-1"></i> Due Dec 20
+                </span>
+              </div>
+
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">Project: Plant Growth Cycle</h3>
+              <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
+                Observe and document plant growth over 2 weeks. Include photos and daily height measurements in the PDF template.
+              </p>
+
+              <div class="flex items-center text-xs font-bold text-slate-500 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800 pt-4">
+                <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center mr-2 text-[10px] text-slate-600 dark:text-slate-300">RK</div>
+                <span>Mr. Rajesh Kumar</span>
+              </div>
+            </div>
+
+            <button class="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-5 py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-file-pdf"></i> View Guidelines
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="results" class="tab-content hidden outline-none">
+      
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 mb-6 flex flex-col md:flex-row justify-between items-center gap-6">
+        
+        <div class="w-full md:w-auto">
+          <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Select Examination</label>
+          <div class="relative">
+            <select id="examSelect" onchange="updateResult()" class="w-full md:w-72 appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white py-3 px-4 pr-10 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer shadow-sm">
+              <option value="ut1">Unit Test 1 (August)</option>
+              <option value="mid">Mid-Term Exam (October)</option>
+              <option value="ut2">Unit Test 2 (December)</option>
+              <option value="sem">Semester Final (January)</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+              <i class="fas fa-chevron-down text-xs"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end bg-slate-50 dark:bg-slate-800/50 px-6 py-3 rounded-xl border border-slate-100 dark:border-slate-700">
+          <div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">Percentile</p>
+            <p id="sgpa-display" class="text-2xl font-black text-brand-600 dark:text-brand-400">87%</p>
+          </div>
+          <div class="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
+          <div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">Status</p>
+            <p id="status-display" class="text-sm font-black text-emerald-600 dark:text-emerald-400 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/20 rounded">PASS</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-brand-50 dark:bg-brand-900/10 border-l-4 border-brand-500 p-5 rounded-r-xl mb-6 shadow-sm">
+        <div class="flex items-start gap-4">
+          <div class="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 shrink-0">
+             <i class="fas fa-quote-left"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-brand-900 dark:text-brand-100">Class Teacher's Remark</h3>
+            <p id="remark-text" class="text-sm text-brand-700 dark:text-brand-300 italic mt-1 font-medium leading-relaxed">
+              "Consistent performance across all subjects. Good improvement in mathematics and science!"
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="hidden md:grid grid-cols-12 gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          <div class="col-span-6">Subject</div>
+          <div class="col-span-2 text-center">Marks Obtained</div>
+          <div class="col-span-2 text-center">Grade</div>
+          <div class="col-span-2 text-right">Points</div>
+        </div>
+
+        <div id="results-container" class="divide-y divide-slate-100 dark:divide-slate-800">
+          </div>
+      </div>
+
+      <div class="mt-8 text-center">
+        <button class="bg-slate-800 dark:bg-white hover:bg-slate-700 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-bold py-3 px-8 rounded-xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2 mx-auto">
+          <i class="fas fa-file-download"></i> Download Report Card
+        </button>
+      </div>
+    </section>
+
+    <section id="performance" class="tab-content hidden outline-none">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-10 text-center shadow-sm">
+        <div class="w-16 h-16 bg-orange-50 dark:bg-orange-900/20 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+          <i class="fas fa-chart-pie"></i>
+        </div>
+        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Detailed Analytics</h2>
+        <p class="text-slate-500 dark:text-slate-400 mb-6 max-w-md mx-auto">
+          View subject-wise growth trends, class ranking comparison, and attendance correlations.
+        </p>
+        <a href="stats.html" class="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 font-bold hover:underline">
+          Go to Statistics Page <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="../js/theme-manager.js"></script>
+
+  <script>
+    // --- 1. TAB LOGIC ---
+    function showTab(tabName, ev) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+      
+      // Show target tab
+      const target = document.getElementById(tabName);
+      if (target) target.classList.remove('hidden');
+
+      // Reset button styles
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('border-brand-600', 'bg-brand-50/50', 'dark:bg-brand-900/10', 'text-brand-600', 'dark:text-brand-400');
+        btn.classList.add('border-transparent', 'text-slate-600', 'dark:text-slate-400');
+        btn.setAttribute('aria-selected', 'false');
+      });
+
+      // Highlight active button
+      if (ev && ev.currentTarget) {
+        const btn = ev.currentTarget;
+        btn.classList.remove('border-transparent', 'text-slate-600', 'dark:text-slate-400');
+        btn.classList.add('border-brand-600', 'bg-brand-50/50', 'dark:bg-brand-900/10', 'text-brand-600', 'dark:text-brand-400');
+        btn.setAttribute('aria-selected', 'true');
+      }
+    }
+
+    // --- 2. EXAM RESULTS DATA ---
+    const examData = {
+      ut1: {
+        sgpa: "84%",
+        status: "PASS",
+        remark: "Good start to the term. Shows improvement in science subjects.",
+        subjects: [
+          { name: "Mathematics", marks: "88/100", grade: "A", points: "8.8" },
+          { name: "Physics", marks: "82/100", grade: "A-", points: "8.2" },
+          { name: "Chemistry", marks: "85/100", grade: "A", points: "8.5" },
+          { name: "English", marks: "78/100", grade: "B+", points: "7.8" }
+        ]
+      },
+      mid: {
+        sgpa: "87%",
+        status: "PASS",
+        remark: "Consistent improvement shown. Excellent performance in science subjects.",
+        subjects: [
+          { name: "Mathematics", marks: "90/100", grade: "A+", points: "9.0" },
+          { name: "Physics", marks: "85/100", grade: "A", points: "8.5" },
+          { name: "Chemistry", marks: "88/100", grade: "A+", points: "8.8" },
+          { name: "English", marks: "80/100", grade: "A-", points: "8.0" }
+        ]
+      },
+      ut2: {
+        sgpa: "85%",
+        status: "PASS",
+        remark: "Slight improvement needed in language subjects, but science subjects remain strong.",
+        subjects: [
+          { name: "Mathematics", marks: "86/100", grade: "A", points: "8.6" },
+          { name: "Physics", marks: "82/100", grade: "A-", points: "8.2" },
+          { name: "Chemistry", marks: "84/100", grade: "A", points: "8.4" },
+          { name: "English", marks: "77/100", grade: "B+", points: "7.7" }
+        ]
+      },
+      sem: {
+        sgpa: "89%",
+        status: "PASS",
+        remark: "Outstanding term performance. Top 10 in class.",
+        subjects: [
+          { name: "Mathematics", marks: "94/100", grade: "O", points: "9.4" },
+          { name: "Physics", marks: "88/100", grade: "A+", points: "8.8" },
+          { name: "Chemistry", marks: "91/100", grade: "O", points: "9.1" },
+          { name: "English", marks: "82/100", grade: "A", points: "8.2" }
+        ]
+      }
+    };
+
+    // --- 3. DYNAMIC RENDER FUNCTION ---
+    function updateResult() {
+      const select = document.getElementById('examSelect');
+      const key = select.value;
+      const data = examData[key];
+
+      // Update Header Stats
+      document.getElementById('sgpa-display').innerText = data.sgpa;
+      document.getElementById('remark-text').innerText = `"${data.remark}"`;
+      
+      const statusEl = document.getElementById('status-display');
+      statusEl.innerText = data.status;
+      if(data.status === "PASS") {
+         statusEl.className = "text-sm font-black text-emerald-600 dark:text-emerald-400 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/20 rounded uppercase";
+      } else {
+         statusEl.className = "text-sm font-black text-red-600 dark:text-red-400 px-2 py-0.5 bg-red-50 dark:bg-red-900/20 rounded uppercase";
+      }
+
+      // Render Table Rows
+      const container = document.getElementById('results-container');
+      container.innerHTML = data.subjects.map(sub => `
+        <div class="group hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors p-4 md:grid md:grid-cols-12 md:gap-4 flex flex-col gap-2">
+          
+          <div class="md:col-span-6 flex justify-between md:block">
+             <span class="md:hidden text-xs font-bold text-slate-400 uppercase">Subject</span>
+             <span class="font-bold text-slate-800 dark:text-white">${sub.name}</span>
+          </div>
+
+          <div class="md:col-span-2 md:text-center flex justify-between md:block">
+             <span class="md:hidden text-xs font-bold text-slate-400 uppercase">Marks</span>
+             <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">${sub.marks}</span>
+          </div>
+
+          <div class="md:col-span-2 md:text-center flex justify-between md:block">
+             <span class="md:hidden text-xs font-bold text-slate-400 uppercase">Grade</span>
+             <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold">${sub.grade}</span>
+          </div>
+
+          <div class="md:col-span-2 md:text-right flex justify-between md:block">
+             <span class="md:hidden text-xs font-bold text-slate-400 uppercase">Points</span>
+             <span class="text-sm font-bold text-brand-600 dark:text-brand-400">${sub.points}</span>
+          </div>
+
+        </div>
+      `).join('');
+    }
+
+    // --- 4. INIT ---
+    document.addEventListener("DOMContentLoaded", () => {
+      // Load default tab
+      showTab('homework');
+      // Load default exam data
+      updateResult();
+    });
+  </script>
+
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none"></div>
+
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/global-search.js"></script>
+  <script src="../js/notification-service.js"></script>
+  <script src="../js/export-service.js"></script>
+
+</body>
+</html>
