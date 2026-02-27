@@ -332,10 +332,4 @@ This project is licensed under the **MIT License**.
 
 ---
 
-## 💡 Final Note
-
-This project showcases how a traditional school system can be transformed into a **modern digital ERP solution**, improving efficiency and accessibility.
-
-A strong and impactful addition to your **full-stack portfolio 🚀**
-
 ---
